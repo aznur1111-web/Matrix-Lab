@@ -1,0 +1,1776 @@
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark light"><meta name="description" content="Az Matrix Lab, a single-file course for matrix algorithms and numerical linear algebra"><title>Az Matrix Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#111722;--panel:#192230;--panel2:#202b3a;--panel3:#141c27;--line:#2c394b;--line2:#3b4b61;--text:#e8eef7;--muted:#a7b4c7;--subtle:#8190a5;--accent:#8ab4f8;--strong:#c9ddff;--good:#9ed7bd;--warn:#edc477;--bad:#ff929e;--shadow:none;--radius:13px}
+:root[data-theme=light]{color-scheme:light;--bg:#f4f6f8;--panel:#fff;--panel2:#f7f9fb;--panel3:#f0f4f8;--line:#dce2e9;--line2:#cbd4df;--text:#17212d;--muted:#596a7e;--subtle:#718197;--accent:#315fa2;--strong:#244a82;--good:#176b4c;--warn:#8c5c04;--bad:#b33143;--shadow:0 8px 24px rgba(20,35,50,.05)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button,a,select{touch-action:manipulation}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}a{color:var(--accent);text-decoration:none}.muted{color:var(--muted)}.mono,code,pre,textarea{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.topbar{height:64px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:0 22px;background:var(--bg);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--text)}.brand-mark{width:34px;height:34px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2);display:grid;place-items:center;color:var(--strong);font-weight:850;font-size:15px}.brand strong{display:block;font-size:14px;line-height:1.2}.brand small{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);margin-top:2px}
+.top-meta{flex:1;color:var(--subtle);font-size:12px;letter-spacing:.02em}
+.top-actions{display:flex;align-items:center;gap:7px}.top-actions label{font-size:11px;color:var(--muted)}
+select,.btn{border:1px solid var(--line2);background:var(--panel3);color:var(--text);border-radius:8px;padding:8px 11px;font-size:12px}.btn{font-weight:600;white-space:nowrap}.btn:hover{border-color:var(--accent);color:var(--strong)}.btn.primary{background:var(--accent);color:#10203a;border-color:var(--accent)}:root[data-theme=light] .btn.primary{color:white}
+.layout{display:grid;grid-template-columns:264px minmax(420px,1fr);max-width:1500px;margin:auto;min-height:calc(100vh - 64px)}
+.sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto;border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column}
+.side-title{display:flex;justify-content:space-between;color:var(--subtle);font-size:10px;letter-spacing:.14em;font-weight:800;padding:0 4px 12px}
+.pill,.tag{border:1px solid var(--line2);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--muted);white-space:nowrap}
+.search{display:flex;gap:7px;align-items:center;border:1px solid var(--line);border-radius:9px;background:var(--panel3);height:39px;padding:0 10px;margin-bottom:10px}
+.search input{min-width:0;width:100%;background:transparent;border:0;outline:0;color:var(--text);font-size:12px}
+.search kbd{border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--subtle);font-size:10px}
+.filter{display:block;color:var(--subtle);font-size:11px;margin-bottom:12px}.filter select{display:block;width:100%;max-width:none;margin-top:5px;padding:7px}
+.tree{display:flex;flex-direction:column;gap:12px}
+.group-label{display:flex;justify-content:space-between;color:var(--subtle);font-size:10px;font-weight:800;letter-spacing:.08em;padding:4px 5px}
+.link{width:100%;text-align:left;display:flex;gap:8px;align-items:center;background:transparent;border:1px solid transparent;color:var(--muted);padding:7px 8px;border-radius:8px;min-height:34px}
+.link .num{font:10px ui-monospace,monospace;color:var(--subtle);width:19px;flex:none}
+.link .name{font-size:12px;flex:1}.link .done{color:var(--good)}
+.link:hover{background:var(--panel2);color:var(--text)}
+.link.active{background:var(--panel2);border-color:var(--line2);color:var(--strong)}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
+.progress-row{display:flex;justify-content:space-between;color:var(--subtle);font-size:11px;margin-bottom:7px}
+.progress{height:5px;background:var(--panel2);border-radius:9px;overflow:hidden}.progress>div{height:100%;width:0;background:var(--accent);transition:width .25s}
+.side-actions{display:flex;gap:6px;margin-top:12px}.side-actions .btn{flex:1;padding:7px;font-size:11px}
+main{max-width:920px;width:100%;min-width:0;margin:auto;padding:28px 30px 40px}
+.breadcrumb{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--subtle);margin-bottom:16px}
+.header{padding:2px 2px 22px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:var(--accent);margin-bottom:9px}
+.header h1{font-size:clamp(27px,3vw,36px);line-height:1.12;letter-spacing:-.035em;margin:0 0 10px;font-weight:700}
+.header p{font-size:14.5px;color:var(--muted);margin:0 0 14px;max-width:740px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag.good{color:var(--good)}.tag.warn{color:var(--warn)}
+.header-actions{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)}
+.panel-head{padding:18px 20px 0}.panel-head h2{font-size:15px;margin:0 0 4px;letter-spacing:-.01em;font-weight:650}.panel-head p{font-size:12.5px;color:var(--muted);margin:0}
+.body{padding:16px 20px 20px}
+.idea{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:20px}
+.idea p{font-size:13.5px;color:var(--muted);margin:0 0 13px}
+.mental{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:13px}
+.mental small{color:var(--subtle);font-size:10px;letter-spacing:.11em;text-transform:uppercase}
+.mental strong{display:block;margin:6px 0;font-size:13px;color:var(--strong)}
+.mental p{font-size:12px;color:var(--muted);margin:0}
+.takeaway{padding:11px 13px;border:1px solid var(--line2);background:var(--panel3);border-radius:8px;color:var(--strong);font-size:12.5px;line-height:1.6}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mini{background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:13px}
+.mini h3{font-size:12px;margin:0 0 7px;font-weight:650}
+.mini p{font-size:12.5px;color:var(--muted);margin:0;line-height:1.6}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+.steps li{counter-increment:s;display:flex;gap:10px;color:var(--muted);font-size:12.5px;line-height:1.55}
+.steps li:before{content:counter(s);width:23px;height:23px;flex:none;display:grid;place-items:center;border:1px solid var(--line2);background:var(--panel3);border-radius:6px;color:var(--accent);font:11px ui-monospace,monospace}
+.pseudo{white-space:pre-wrap;overflow:auto;background:var(--panel3);border:1px solid var(--line);border-radius:10px;padding:14px;font:12px/1.75 ui-monospace,monospace;color:var(--strong);margin:0}
+.table-wrap{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid var(--line);text-align:left;padding:9px 10px;vertical-align:top}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle);font-weight:700}
+td{color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{padding:12px;background:var(--panel3);border:1px solid var(--line);border-radius:9px}
+.tile span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle)}
+.tile strong{display:block;color:var(--strong);font:700 14px ui-monospace,monospace;margin-top:6px}
+.tile small{font-size:10.5px;color:var(--muted);display:block;margin-top:2px}
+.notice{padding:12px 13px;background:var(--panel3);border:1px solid color-mix(in srgb,var(--warn) 35%,var(--line));border-radius:9px;font-size:12.5px;color:var(--muted);line-height:1.65}
+.notice strong{color:var(--warn)}
+.notice.info{border-color:var(--line2)}.notice.info strong{color:var(--accent)}
+.lab-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lab-top label{font-size:11.5px;color:var(--muted)}
+.lab-input{width:100%;min-height:90px;resize:vertical;background:var(--panel3);border:1px solid var(--line2);border-radius:9px;padding:11px;color:var(--text);font:12px/1.65 ui-monospace,monospace;margin:11px 0}
+.lab-output{padding:13px;background:var(--panel3);border:1px solid var(--line);border-radius:9px;min-height:70px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--strong);font:12px/1.75 ui-monospace,monospace;overflow-x:auto}
+.lab-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.label{font-size:10px;color:var(--subtle);font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
+.code-head{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:11px 13px;background:var(--panel3);border-bottom:1px solid var(--line)}
+.code-editor{display:block;width:100%;min-height:220px;resize:vertical;border:0;border-radius:0;background:var(--panel3);color:var(--text);padding:15px;font:12px/1.7 ui-monospace,monospace;outline:0}
+.code-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:9px 13px;color:var(--subtle);font-size:10px;border-top:1px solid var(--line)}
+.practice{border:1px solid var(--line);background:var(--panel3);border-radius:9px;padding:13px}
+.practice summary{cursor:pointer;font-size:12.5px;font-weight:600}
+.practice p{font-size:12.5px;color:var(--muted);margin:10px 0 0;line-height:1.65}
+.references{display:flex;flex-direction:column;gap:8px}
+.references a{font-size:12.5px;overflow-wrap:anywhere}
+.home-hero{padding:30px;background:linear-gradient(150deg,var(--panel),var(--panel3));border:1px solid var(--line);border-radius:14px;margin-bottom:16px}
+.home-hero h1{font-size:clamp(30px,3.6vw,42px);line-height:1.1;letter-spacing:-.04em;margin:8px 0 14px;font-weight:700}
+.home-hero p{color:var(--muted);font-size:14px;max-width:720px;margin:0 0 18px;line-height:1.65}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat strong{display:block;font:700 22px ui-monospace,monospace;color:var(--strong)}
+.stat span{display:block;font-size:10.5px;color:var(--muted);margin-top:3px}
+.chapter-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chapter-card{padding:14px;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--text)}
+.chapter-card:hover{border-color:var(--accent)}
+.chapter-card .num{font-size:10px;color:var(--accent);letter-spacing:.09em;font-weight:800}
+.chapter-card strong{display:block;font-size:13px;margin:5px 0;font-weight:650}
+.chapter-card p{font-size:11.5px;color:var(--muted);margin:0;line-height:1.55}
+.toast{position:fixed;z-index:99;bottom:20px;left:50%;transform:translate(-50%,10px);opacity:0;pointer-events:none;background:var(--panel);border:1px solid var(--line2);border-radius:9px;padding:11px 15px;box-shadow:var(--shadow);font-size:12px;transition:opacity .14s,transform .14s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.footer{font-size:10.5px;color:var(--subtle);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:6px 2px 14px;align-items:center}
+@media(max-width:1080px){.layout{grid-template-columns:240px minmax(360px,1fr)}main{padding:24px 22px 36px}}
+@media(max-width:840px){.topbar{height:auto;min-height:60px;flex-wrap:wrap;gap:10px;padding:10px 14px}.top-meta{display:none}.top-actions{margin-left:auto}.top-actions label{display:none}.layout{display:block}.sidebar{position:static;height:auto;max-height:none;border:0;border-bottom:1px solid var(--line);padding:14px}.tree{max-height:260px;overflow:auto}.side-foot{display:none}main{padding:20px 15px 32px}.idea{grid-template-columns:1fr}.mental{order:-1}.stats{grid-template-columns:1fr 1fr}.chapter-cards,.two,.lab-cols{grid-template-columns:1fr}}
+@media(max-width:520px){.brand small{display:none}.brand-mark{width:30px;height:30px}.brand strong{font-size:12px}.top-actions select{max-width:92px;padding:6px;font-size:10px}.top-actions .btn{padding:6px 8px;font-size:10px}.chapter-cards{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}.home-hero{padding:20px}.home-hero h1{font-size:30px}.header h1{font-size:27px}.body,.panel-head{padding-left:15px;padding-right:15px}.footer{display:block}.footer span{display:block;margin-bottom:6px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+@media print{.topbar,.sidebar,.header-actions,.lab-top,.btn,.toast{display:none!important}.layout{display:block}main{padding:0;max-width:none}.panel,.home-hero{break-inside:avoid;box-shadow:none}body{background:#fff;color:#111}}
+</style></head><body>
+
+<header class="topbar">
+  <a class="brand" href="#home" id="homeLink"><span class="brand-mark">Az</span><span><strong>Az Matrix Lab</strong><small>MATRIX ALGORITHMS · NUMERICAL LINEAR ALGEBRA</small></span></a>
+  <div class="top-meta" id="catalogCount"></div>
+  <div class="top-actions">
+    <label for="themeSelect">Theme</label>
+    <select id="themeSelect" aria-label="Theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select>
+    <button class="btn" id="printBtn">Print / PDF</button>
+    <button class="btn" id="exportBtn">Export</button>
+    <button class="btn" id="importBtn">Import</button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="Course navigation">
+    <div class="side-title"><span>COURSE CATALOG</span><span class="pill" id="lessonCount">0</span></div>
+    <div class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search matrix topics…" aria-label="Search lessons"><kbd>/</kbd></div>
+    <label class="filter">Chapter<select id="chapterFilter"><option value="all">All chapters</option></select></label>
+    <nav class="tree" id="courseTree" aria-label="Lessons"></nav>
+    <div class="side-foot">
+      <div class="progress-row"><span>COURSE PROGRESS</span><strong id="progressText">0 / 0</strong></div>
+      <div class="progress" id="progressBar"><div id="progressFill"></div></div>
+      <div class="side-actions"><button class="btn" data-page="home">Home</button><button class="btn" data-page="progress">Progress</button></div>
+    </div>
+  </aside>
+  <main id="mainView" tabindex="-1" aria-live="polite"></main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   Az Matrix Lab
+   ============================================================ */
+const CHAPTERS=[
+ {id:"foundations",title:"1. Matrix foundations",desc:"Matrix operations, dot products, norms, conditioning, sparsity and block matrices.",ids:["matrix-operations","vector-norms","conditioning-sparsity"]},
+ {id:"linear-systems",title:"2. Linear systems",desc:"Gaussian elimination, LU factorization, pivoting, Cramer's rule and Cholesky.",ids:["gaussian-elimination","lu-decomposition","cholesky"]},
+ {id:"factorizations",title:"3. Matrix factorizations",desc:"QR, LDL transpose, eigendecomposition, SVD and Schur decomposition.",ids:["qr","eigendecomposition","svd","schur"]},
+ {id:"orthogonal",title:"4. Orthogonalization and rotations",desc:"Gram-Schmidt, modified Gram-Schmidt, Householder reflections and Givens rotations.",ids:["gram-schmidt","householder-givens"]},
+ {id:"iterative",title:"5. Iterative linear solvers",desc:"Jacobi, Gauss-Seidel, SOR, conjugate gradient, MINRES, GMRES and BiCGSTAB.",ids:["jacobi-gauss-seidel","sor-cg","krylov"]},
+ {id:"sparse",title:"6. Sparse solvers and preconditioning",desc:"CSR and CSC storage, ILU, incomplete Cholesky, AMG and domain decomposition.",ids:["csr-csc","ilu-amg","domain-decomposition"]},
+ {id:"products",title:"7. Matrix products and functions",desc:"Strassen, Winograd, Kronecker, Hadamard, matrix exponential and logarithm.",ids:["strassen","kronecker-hadamard","matrix-functions"]},
+ {id:"inverses",title:"8. Inverses and low rank updates",desc:"Pseudoinverse, Sherman-Morrison, Woodbury, rank one updates and Levinson.",ids:["matrix-inverse","sherman-morrison","pseudoinverse"]},
+ {id:"structured",title:"9. Structured and exact matrices",desc:"Toeplitz solvers, Bareiss elimination, Smith normal form, Hermite normal form.",ids:["toeplitz","bareiss","smith-hermite"]},
+ {id:"large-scale",title:"10. Large scale and parallel",desc:"Randomized SVD, sketching, low rank approximation, Cannon and SUMMA.",ids:["randomized-svd","sketching","cannon-summa"]}
+];
+
+const D={
+ kind:"Concept",status:"Concept lesson",level:2,demo:"none",demoTitle:"Interactive teaching lab",inputKind:"matrix",refs:[],codeKey:"generic",
+ input:"A matrix, vector or pair of matrices plus the parameters this algorithm requires.",
+ output:"A factorization, solution, decomposition or numerical result.",
+ invariant:"The algorithm must respect the mathematical structure of its inputs. Any change to pivoting, ordering or preconditioning changes the result and the error.",
+ complexity:["Depends on matrix size and structure","Depends on storage and factorization","Measure on representative problems"],
+ uses:"Use this as one layer inside a larger numerical or data pipeline.",
+ strength:"Fits the problem it was designed for when the assumptions hold.",
+ limits:"Depends on conditioning, structure and floating point arithmetic.",
+ pitfall:"Floating point is not exact. Always check residuals and condition numbers rather than trusting the result blindly.",
+ question:"What is the main idea of this lesson?",
+ trace:null
+};
+function mk(o){
+ const steps=o.steps||["Read the matrix or vector.","Apply the algorithm.","Produce the result.","Check the residual or verification."];
+ return Object.assign({},D,{
+  summary:o.summary||"",
+  mental:o.mental||o.title,
+  mentalText:o.mentalText||o.summary||"",
+  problem:o.problem||("How does "+o.title+" work and what does it cost?"),
+  steps:steps,
+  trace:o.trace||steps.map((s,i)=>["Step "+(i+1),s,i===steps.length-1?"Verified":"Step done"]),
+  answer:o.answer||o.summary||"",
+  pseudo:o.pseudo||"",
+  sample:o.sample||"",
+  level:o.level||2
+ },o);
+}
+
+const RAW=[
+/* Chapter 1 */
+{id:"matrix-operations",title:"Matrix operations and the dot product",level:1,kind:"Foundation",status:"Runnable teaching lab",
+ summary:"A matrix is a rectangular array of numbers. Addition, scalar multiplication, matrix multiplication and the dot product are the basic operations. Matrix multiplication is not commutative.",
+ mental:"A grid of numbers and a sliding sum",
+ mentalText:"Each entry of the product C = A B is a dot product of one row of A with one column of B. The order matters, so A B is usually not equal to B A.",
+ steps:["Check dimensions: an m by k matrix times a k by n matrix gives m by n.","For each entry C[i][j], take the dot product of row i of A and column j of B.","Add the results.","Verify with the identity matrix and with simple test cases."],
+ pseudo:"(AB)[i][j] = sum over k of A[i][k] * B[k][j]\n\nDimensions: (m x k) * (k x n) = (m x n)\n\nProperties:\n  (AB)C = A(BC)       associative\n  A(B + C) = AB + AC  distributive\n  AB != BA in general non commutative\n  (AB)^T = B^T A^T    transpose reverses order",
+ invariant:"Matrix multiplication is only defined when the inner dimensions match. The transpose of a product reverses the order.",
+ uses:"Everywhere in numerical computing, machine learning, graphics, physics and engineering.",
+ strength:"A single primitive that expresses linear transformations, linear systems and many data operations.",
+ limits:"Naive cost is O(n^3) for square matrices. The order of operations can matter for floating point accuracy.",
+ pitfall:"Assuming AB = BA. This is false for almost all matrices and leads to wrong results in algorithms that swap the order.",
+ question:"If A is 3 by 4 and B is 4 by 5, what is the shape of AB?",
+ answer:"3 by 5. The inner dimensions (4 and 4) must match, and the outer dimensions give the result.",
+ demo:"matrix-basics",sample:"4 1 2\n1 3 0\n2 0 5",
+ refs:[["Golub and Van Loan, Matrix Computations, 4th ed.","https://www.cs.cornell.edu/cv/GVL4/golubandvanloan.htm"],["Trefethen and Bau, Numerical Linear Algebra","https://www.siam.org/Publications/Books/Book-Details/numerical-linear-algebra"],["Wikipedia, Matrix multiplication","https://en.wikipedia.org/wiki/Matrix_multiplication"],["Wikipedia, Dot product","https://en.wikipedia.org/wiki/Dot_product"]]},
+{id:"vector-norms",title:"Vector norms and distances",level:2,kind:"Foundation",status:"Runnable teaching lab",
+ summary:"A norm measures the size of a vector. The 1, 2 and infinity norms are the most common. Each gives a different notion of distance and error.",
+ mental:"Different ways to measure how long a walk was",
+ mentalText:"A taxi driver measures distance along the grid. A bird measures straight line distance. A maximum load cares only about the largest single step.",
+ steps:["Pick a norm that matches your error measure.","1 norm: sum of absolute values.","2 norm: square root of sum of squares, the Euclidean length.","Infinity norm: the largest absolute entry."],
+ pseudo:"||x||_1   = sum |x_i|\n||x||_2   = sqrt(sum x_i^2)\n||x||_inf = max |x_i|\n\nBound: ||x||_2 <= ||x||_1 <= sqrt(n) * ||x||_2\n\nInduced matrix norm: ||A|| = max over x of ||Ax|| / ||x||\n  ||A||_1   = max column sum of absolute values\n  ||A||_inf = max row sum of absolute values\n  ||A||_2   = largest singular value",
+ invariant:"A norm is always non negative, zero only for the zero vector, scales linearly and satisfies the triangle inequality.",
+ uses:"Error analysis, convergence tests, iterative solver stopping criteria, regularisation.",
+ strength:"Gives a single number to compare vectors and errors.",
+ limits:"Different norms give different answers. The choice must match the application.",
+ pitfall:"Stopping an iterative solver with an absolute tolerance fails when the answer is very small or very large. Use a relative tolerance scaled by the data.",
+ question:"For x = (3, -4), what are the 1, 2 and infinity norms?",
+ answer:"1 norm is 7. 2 norm is 5. Infinity norm is 4.",
+ demo:"vector-norms",sample:"3, -4, 0, 5",
+ refs:[["Wikipedia, Norm (mathematics)","https://en.wikipedia.org/wiki/Norm_(mathematics)"],["NIST DLMF, Chapter 1 norms","https://dlmf.nist.gov/"],["Higham, Accuracy and Stability of Numerical Algorithms","https://epubs.siam.org/doi/book/10.1137/1.9780898718027"]]},
+{id:"conditioning-sparsity",title:"Conditioning, sparsity and block matrices",level:3,kind:"Foundation",status:"Runnable teaching lab",
+ summary:"The condition number of a matrix measures how much relative error in the input can grow in the solution. A sparse matrix has mostly zeros. A block matrix is partitioned into rectangular sub blocks.",
+ mental:"A loudspeaker that amplifies noise versus one that does not",
+ mentalText:"A well conditioned problem passes small input errors through unchanged. An ill conditioned problem amplifies them enormously. The famous example is the Hilbert matrix.",
+ steps:["Compute the condition number from the 2 norm: kappa = sigma_max / sigma_min.","For a matrix norm, use the induced norm of A times the induced norm of A inverse.","Check the sparsity pattern to see if a sparse method applies.","Partition large matrices into blocks that fit in cache or memory."],
+ pseudo:"Condition number (2 norm): kappa_2(A) = ||A||_2 * ||A^{-1}||_2 = sigma_max / sigma_min\n\nRule of thumb:\n  if kappa ~ 10^k, expect to lose about k digits\n  when solving with double precision (about 16 digits)\n\nHilbert matrix H[i][j] = 1 / (i + j - 1)\n  kappa grows like e^(3.5 n) for large n\n  H_12 has condition number around 10^16, close to double precision limit\n\nSparsity: fraction of zero entries. A matrix with 99 percent zeros is sparse.\nBlock matrices: partition into sub blocks and multiply or solve blockwise.",
+ invariant:"The condition number bounds the relative error: relative error in solution <= kappa times relative error in data.",
+ uses:"Diagnosing stability, choosing direct versus iterative methods, deciding on preconditioning.",
+ strength:"Predicts how many digits you can trust in a numerical result.",
+ limits:"Computing the exact condition number needs the SVD. Estimating is cheaper but approximate.",
+ pitfall:"Solving an ill conditioned system by simply using more precision does not always help. Sometimes the problem must be reformulated.",
+ question:"If kappa = 10^10 and you compute in double precision with about 16 digits, how many digits of the answer can you trust?",
+ answer:"About 6 digits. The rule of thumb is 16 minus 10, so 6 reliable digits remain.",
+ demo:"conditioning",sample:"4 1 2\n1 3 0\n2 0 5",
+ refs:[["Wikipedia, Condition number","https://en.wikipedia.org/wiki/Condition_number"],["Wikipedia, Hilbert matrix","https://en.wikipedia.org/wiki/Hilbert_matrix"],["Wikipedia, Sparse matrix","https://en.wikipedia.org/wiki/Sparse_matrix"],["LAPACK Users Guide, Chapter 4 accuracy","https://netlib.org/lapack/lug/node75.html"]]},
+/* Chapter 2 */
+{id:"gaussian-elimination",title:"Gaussian elimination and pivoting",level:2,kind:"Direct solver",status:"Runnable teaching lab",
+ summary:"Gaussian elimination turns a linear system into an upper triangular system by subtracting multiples of one row from the rows below. Back substitution then solves for the unknowns.",
+ mental:"Peeling away variables one at a time",
+ mentalText:"Subtract a multiple of the first row to make the entries below the diagonal zero. Repeat for each column. The system becomes triangular and each unknown can be read off from the bottom up.",
+ steps:["Form the augmented matrix [A | b].","For each column, choose a pivot (partial pivoting picks the largest absolute value).","Swap rows to bring the pivot to the diagonal.","Eliminate the entries below the pivot.","Back substitute from the last row up."],
+ pseudo:"for k = 1 to n-1:\n  choose pivot p = argmax |A[i][k]| for i >= k\n  swap rows k and p\n  for i = k+1 to n:\n    m = A[i][k] / A[k][k]\n    for j = k to n+1:\n      A[i][j] -= m * A[k][j]\n\nback substitution:\n  for i = n down to 1:\n    x[i] = (A[i][n+1] - sum over j>i of A[i][j] * x[j]) / A[i][i]\n\nCost: 2 n^3 / 3 flops for the elimination, n^2 flops for back substitution",
+ invariant:"If the matrix is nonsingular, elimination with partial pivoting produces a solution. If a pivot is zero with all candidates zero, the matrix is singular.",
+ uses:"Small to medium dense linear systems. Base of LU, Cholesky and many other factorizations.",
+ strength:"Simple, direct and gives an exact solution (up to floating point).",
+ limits:"Cost O(n^3) is prohibitive for large systems. Fills in sparsity.",
+ pitfall:"Skipping pivoting causes numerical instability when a small pivot divides large numbers. Always pivot in floating point.",
+ question:"Why does partial pivoting improve accuracy?",
+ answer:"Choosing the largest available pivot keeps the multipliers small, which stops the errors from being amplified during elimination.",
+ demo:"gaussian-elimination",sample:"2 1 -1 8\n-3 -1 2 -11\n-2 1 2 -3",
+ refs:[["Wikipedia, Gaussian elimination","https://en.wikipedia.org/wiki/Gaussian_elimination"],["Golub and Van Loan, Section 3.2","https://www.cs.cornell.edu/cv/GVL4/golubandvanloan.htm"],["LAPACK dgesv routine","https://netlib.org/lapack/explore-html/d8/d72/dgesv_8f.html"]]},
+{id:"lu-decomposition",title:"LU decomposition with partial pivoting",level:3,kind:"Matrix factorization",status:"Runnable teaching lab",
+ summary:"LU decomposition writes a matrix as a product of a lower triangular L, an upper triangular U and a permutation P, so that P A = L U. Once you have the factors, solving with many right hand sides is cheap.",
+ mental:"Taking a puzzle apart once so you can reassemble it fast",
+ mentalText:"The expensive part is the factorization. Then each new right hand side costs only two triangular solves.",
+ steps:["Apply Gaussian elimination and record the multipliers in L.","Record the row swaps in P.","Store the resulting upper triangular matrix as U.","Solve L y = P b by forward substitution.","Solve U x = y by back substitution."],
+ pseudo:"PA = LU\n\nFactorization cost: 2 n^3 / 3 flops\nSolve cost: 2 n^2 flops per right hand side\n\nUse:\n  L y = P b   forward substitution\n  U x = y     back substitution\n\nDeterminant: det(A) = det(P)^-1 * prod diag(U)\n            = (+/- 1) * prod diag(U)",
+ invariant:"PA = LU always exists for a nonsingular A when partial pivoting is used. Without pivoting, the factorization can fail or be unstable.",
+ uses:"Solving many systems with the same matrix, computing determinants, matrix inverse, least squares via normal equations.",
+ strength:"One factorization reused for many right hand sides. Numerically stable with partial pivoting.",
+ limits:"Dense only. Fill in can be severe for sparse matrices.",
+ pitfall:"LU without pivoting is not stable even if it does not fail. Always use partial or complete pivoting for a general matrix.",
+ question:"If you factor A once and then solve for 100 right hand sides, how much does each solve cost?",
+ answer:"About 2 n^2 flops per right hand side, compared to 2 n^3 / 3 for the initial factorization. Reusing the factorization is much faster than refactoring.",
+ demo:"lu",sample:"4 3 2\n2 5 1\n6 1 4",
+ refs:[["Wikipedia, LU decomposition","https://en.wikipedia.org/wiki/LU_decomposition"],["LAPACK dgetrf and dgetrs","https://netlib.org/lapack/lug/node26.html"],["Trefethen and Bau, Lecture 20","https://www.siam.org/Publications/Books/Book-Details/numerical-linear-algebra"]]},
+{id:"cholesky",title:"Cholesky decomposition",level:3,kind:"Matrix factorization",status:"Runnable teaching lab",
+ summary:"A symmetric positive definite matrix has a unique factorization A = L L^T with L lower triangular and positive diagonal. It is twice as fast as LU and always stable without pivoting.",
+ mental:"A symmetric matrix halves the work",
+ mentalText:"Because A is symmetric, you only need to compute one triangle. Because A is positive definite, no pivoting is required and the factorization always exists.",
+ steps:["Check that A is symmetric and positive definite.","Compute L column by column.","Use the formula L[i][j] = (A[i][j] - sum L[i][k] L[j][k]) / L[j][j].","The diagonal entries are square roots of positive numbers."],
+ pseudo:"A = L L^T\n\nfor j = 1 to n:\n  L[j][j] = sqrt(A[j][j] - sum over k<j of L[j][k]^2)\n  for i = j+1 to n:\n    L[i][j] = (A[i][j] - sum over k<j of L[i][k] * L[j][k]) / L[j][j]\n\nCost: n^3 / 3 flops, half of LU\n\nApplication:\n  A x = b\n  L y = b   forward\n  L^T x = y back",
+ invariant:"A symmetric matrix is positive definite if and only if the Cholesky factorization exists with positive diagonal. A negative or zero diagonal entry means A is not positive definite.",
+ uses:"Covariance matrices, Kalman filters, least squares via normal equations, sampling from multivariate normal distributions.",
+ strength:"Twice as fast as LU, always stable, easy to implement.",
+ limits:"Requires symmetric positive definite input. Ill conditioned SPD matrices still amplify errors.",
+ pitfall:"Using Cholesky on a symmetric indefinite matrix fails silently or produces NaN. Check the diagonal entry at each step and raise an error on a non positive value.",
+ question:"Why is Cholesky faster than LU for the same matrix size?",
+ answer:"It uses symmetry. Only one triangle is computed, giving n^3 / 3 flops instead of 2 n^3 / 3.",
+ demo:"cholesky",sample:"4 2 2\n2 5 1\n2 1 3",
+ refs:[["Wikipedia, Cholesky decomposition","https://en.wikipedia.org/wiki/Cholesky_decomposition"],["LAPACK dpotrf","https://netlib.org/lapack/explore-html/d0/de3/dpotrf_8f.html"],["Higham, Chapter 10 Cholesky","https://epubs.siam.org/doi/book/10.1137/1.9780898718027"]]},
+/* Chapter 3 */
+{id:"qr",title:"QR decomposition",level:3,kind:"Matrix factorization",status:"Runnable teaching lab",
+ summary:"The QR decomposition writes A = Q R with Q orthogonal and R upper triangular. It is the standard tool for least squares and for computing eigenvalues via the QR algorithm.",
+ mental:"An orthogonal change of basis that simplifies the matrix",
+ mentalText:"The columns of Q form an orthonormal basis. Multiplying by Q^T does not change lengths or angles, so it never amplifies errors.",
+ steps:["Choose a method: Householder reflections, Givens rotations or Gram-Schmidt.","Apply the transformations to reduce A to upper triangular form.","Accumulate the orthogonal transformations into Q.","For least squares, solve R x = Q^T b by back substitution."],
+ pseudo:"A = Q R\n\nQ^T Q = I     orthogonal\nR upper triangular\n\nLeast squares min ||Ax - b||_2:\n  R x = Q^T b    (only the first n rows matter)\n\nCost:\n  Householder QR: 2 m n^2 - 2 n^3 / 3 flops\n  Classical GS: same asymptotically but less stable\n\nQR algorithm for eigenvalues:\n  A_0 = A\n  A_{k+1} = R_k Q_k  where A_k = Q_k R_k\n  converges to Schur form under mild conditions",
+ invariant:"The columns of Q are orthonormal. Q^T Q = I but QQ^T is only I if Q is square.",
+ uses:"Least squares, eigenvalue computation via QR iteration, orthogonalization, solving rank deficient systems with column pivoting.",
+ strength:"Numerically stable and orthogonal. Does not amplify errors.",
+ limits:"More expensive than Cholesky for SPD systems. QR for a dense matrix is O(m n^2).",
+ pitfall:"Classical Gram-Schmidt is less stable than Householder QR. For ill conditioned matrices the loss of orthogonality is severe.",
+ question:"Why does QR not amplify errors?",
+ answer:"Q is orthogonal, so multiplying by Q or Q^T preserves the 2 norm. Errors in R do not grow when Q is applied.",
+ demo:"qr",sample:"1 2 3\n4 5 6\n7 8 10",
+ refs:[["Wikipedia, QR decomposition","https://en.wikipedia.org/wiki/QR_decomposition"],["LAPACK dgeqrf and dgeqp3","https://netlib.org/lapack/lug/node42.html"],["Trefethen and Bau, Lectures 7 to 10","https://www.siam.org/Publications/Books/Book-Details/numerical-linear-algebra"]]},
+{id:"eigendecomposition",title:"Eigendecomposition and the Jacobi method",level:3,kind:"Eigenvalue algorithm",status:"Runnable teaching lab",
+ summary:"An eigenvector of a matrix satisfies A v = lambda v. The eigenvalues describe how the matrix stretches or shrinks along each eigenvector. For symmetric matrices the eigenvectors can be chosen orthogonal.",
+ mental:"Directions that the matrix only stretches, never rotates",
+ mentalText:"Most vectors get rotated and stretched. A few special vectors only get stretched. Those are the eigenvectors, and the stretch factor is the eigenvalue.",
+ steps:["For symmetric matrices, use the Jacobi eigenvalue algorithm.","For general matrices, reduce to Hessenberg form and run the QR algorithm.","Compute the residual ||A v - lambda v|| to verify.","Sort eigenvalues and eigenvectors as required."],
+ pseudo:"A v = lambda v\n\nCharacteristic polynomial: det(A - lambda I) = 0\n\nSymmetric case:\n  A = Q Lambda Q^T with Q orthogonal, Lambda diagonal\n\nJacobi method (symmetric):\n  repeat:\n    choose largest off diagonal entry a[p][q]\n    compute rotation to zero it\n    apply to A and accumulate into V\n  until off diagonal is small\n\nThe power method finds the dominant eigenvalue:\n  v_{k+1} = A v_k / ||A v_k||",
+ invariant:"For a symmetric matrix, real eigenvalues and orthogonal eigenvectors always exist. For a general matrix, eigenvalues may be complex and eigenvectors may fail to span the space.",
+ uses:"Principal component analysis, vibration analysis, stability of dynamical systems, quantum mechanics, spectral clustering.",
+ strength:"Reveals the natural directions of a matrix. Basis for many algorithms.",
+ limits:"Dense eigenvalue computation is O(n^3). Eigenvectors of non normal matrices can be ill conditioned.",
+ pitfall:"When two eigenvalues are nearly equal, the eigenvectors can be very sensitive to small perturbations. This is common in almost defective matrices.",
+ question:"What is the eigenvalue of the identity matrix?",
+ answer:"All eigenvalues are 1. Every vector is an eigenvector.",
+ demo:"eigen",sample:"4 1 2\n1 3 0\n2 0 5",
+ refs:[["Wikipedia, Eigendecomposition","https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix"],["Wikipedia, Jacobi eigenvalue algorithm","https://en.wikipedia.org/wiki/Jacobi_eigenvalue_algorithm"],["LAPACK dsyev","https://netlib.org/lapack/explore-html/d2/d8a/group__double_s_yeigen.html"],["Golub and Van Loan, Chapter 8","https://www.cs.cornell.edu/cv/GVL4/golubandvanloan.htm"]]},
+{id:"svd",title:"Singular value decomposition",level:4,kind:"Matrix factorization",status:"Runnable teaching lab",
+ summary:"The SVD writes any matrix A as U Sigma V^T with U and V orthogonal and Sigma diagonal with non negative entries. It is the most powerful and most stable matrix factorization.",
+ mental:"Every matrix is a rotation, then a stretch, then another rotation",
+ mentalText:"Any linear transformation can be described by how it rotates, how much it stretches along a few orthogonal directions, and how it rotates again.",
+ steps:["Form A^T A (or A A^T for the other side).","Compute its eigenvalues. The singular values are the square roots.","The right singular vectors are the eigenvectors of A^T A.","The left singular vectors are A v / sigma when sigma is non zero."],
+ pseudo:"A = U Sigma V^T\n\nA is m by n, assume m >= n\nU is m by n with orthonormal columns\nSigma is n by n diagonal\nV is n by n orthogonal\n\nProperties:\n  singular values >= 0\n  sigma_i = sqrt(eigenvalue_i of A^T A)\n  rank(A) = number of nonzero singular values\n  ||A||_2 = sigma_max\n  ||A||_F = sqrt(sum sigma_i^2)\n  kappa_2(A) = sigma_max / sigma_min (for square A)\n\nLow rank approximation:\n  A_k = sum_{i=1..k} sigma_i u_i v_i^T\n  This is the best rank k approximation in both 2 and Frobenius norms.",
+ invariant:"The singular values are always real and non negative. They are unique even when the singular vectors are not.",
+ uses:"Least squares, low rank approximation, PCA, image compression, latent semantic analysis, noise filtering, recommender systems.",
+ strength:"Extremely stable. Provides the rank, condition number, and optimal low rank approximation in one shot.",
+ limits:"Full SVD is O(m n min(m,n)). For very large matrices the full SVD is impractical.",
+ pitfall:"SVD is not unique when two singular values are equal. In that case any orthonormal basis of the corresponding subspace is valid.",
+ question:"What is the condition number of a square matrix in the 2 norm?",
+ answer:"The ratio of the largest singular value to the smallest singular value.",
+ demo:"svd",sample:"1 2 3\n4 5 6",
+ refs:[["Wikipedia, Singular value decomposition","https://en.wikipedia.org/wiki/Singular_value_decomposition"],["LAPACK dgesvd","https://netlib.org/lapack/explore-html/d8/d2a/group__svd.html"],["Trefethen and Bau, Lecture 4 and Lecture 5","https://www.siam.org/Publications/Books/Book-Details/numerical-linear-algebra"],["Eckart and Young, 1936 paper on low rank approximation","https://doi.org/10.1007/BF02288367"]]},
+{id:"schur",title:"Schur decomposition",level:4,kind:"Matrix factorization",status:"Concept lesson",
+ summary:"The Schur decomposition writes A = Q T Q^H with Q unitary and T upper triangular. The eigenvalues of A appear on the diagonal of T. It always exists for a complex or real matrix.",
+ mental:"A triangular matrix hiding inside a rotation",
+ mentalText:"A general matrix cannot always be diagonalized, but it can always be brought to triangular form by a unitary change of basis. The diagonal entries are the eigenvalues.",
+ steps:["Compute the Schur form with the QR algorithm.","The diagonal entries of T are the eigenvalues of A.","For real A with complex eigenvalues, use the real Schur form with 2 by 2 blocks.","Reorder the Schur form to bring selected eigenvalues to the top, for example for solving Sylvester equations."],
+ pseudo:"A = Q T Q^H\n\nQ is unitary (Q^H Q = I)\nT is upper triangular\n\nReal Schur form:\n  Q is orthogonal (real)\n  T is quasi upper triangular with 1x1 and 2x2 blocks\n  1x1 blocks hold real eigenvalues\n  2x2 blocks hold complex conjugate pairs\n\nUse:\n  Schur plus back substitution for matrix functions\n  Reordering for control theory and model reduction",
+ invariant:"Every square matrix has a Schur decomposition. The unitary similarity transformation preserves eigenvalues exactly.",
+ uses:"Computing matrix functions, solving Sylvester and Lyapunov equations, stability analysis, matrix square roots and logarithms.",
+ strength:"Always exists. Numerically stable via unitary transformations.",
+ limits:"Dense cost O(n^3). Schur form is not unique because of possible eigenvalue reordering.",
+ pitfall:"A general matrix may not have an eigenvector basis but always has a Schur form. Do not assume you can diagonalize.",
+ question:"How are eigenvalues read off the Schur form?",
+ answer:"They appear on the diagonal of the triangular factor T, one per row.",
+ demo:"none",sample:"",inputKind:"matrix",
+ refs:[["Wikipedia, Schur decomposition","https://en.wikipedia.org/wiki/Schur_decomposition"],["LAPACK dgees and dgeesx","https://netlib.org/lapack/lug/node56.html"],["Golub and Van Loan, Section 7.4","https://www.cs.cornell.edu/cv/GVL4/golubandvanloan.htm"]]},
+/* Chapter 4 */
+{id:"gram-schmidt",title:"Gram-Schmidt and modified Gram-Schmidt",level:3,kind:"Orthogonalization",status:"Runnable teaching lab",
+ summary:"Gram-Schmidt turns a set of linearly independent vectors into an orthonormal set. Classical Gram-Schmidt subtracts all projections at once. Modified Gram-Schmidt subtracts them one at a time and is numerically more stable.",
+ mental:"Straightening a set of vectors so they are all perpendicular",
+ mentalText:"Take the first vector as is. Subtract its projection from the second. Subtract both projections from the third. Normalise each.",
+ steps:["Set q_1 = a_1 / ||a_1||.","For j from 2 to n, set v = a_j.","Subtract q_i (q_i dot a_j) for classical, or subtract q_i (q_i dot v) one at a time for modified.","Normalise v and store as q_j."],
+ pseudo:"Classical Gram-Schmidt:\n  q_1 = a_1 / ||a_1||\n  for j = 2 to n:\n    v = a_j\n    for i = 1 to j-1:\n      r_ij = q_i^T a_j         <-- note a_j, the ORIGINAL column\n      v = v - r_ij * q_i\n    r_jj = ||v||\n    q_j = v / r_jj\n\nModified Gram-Schmidt:\n  q_1 = a_1 / ||a_1||\n  for j = 2 to n:\n    v = a_j\n    for i = 1 to j-1:\n      r_ij = q_i^T v           <-- note v, the UPDATED vector\n      v = v - r_ij * q_i\n    r_jj = ||v||\n    q_j = v / r_jj\n\nThe modified version has much smaller loss of orthogonality\nwhen the columns are nearly dependent.",
+ invariant:"If the input columns are linearly independent, the output vectors are orthonormal. If they are dependent, a zero norm appears and the process must stop.",
+ uses:"Orthogonalization for QR, least squares, Krylov methods, Arnoldi and Lanczos iterations.",
+ strength:"Simple to implement and easy to understand.",
+ limits:"Classical GS loses orthogonality quickly on ill conditioned inputs. Modified GS is better but still loses orthogonality in extreme cases. Householder QR is better still.",
+ pitfall:"Reorthogonalization is often required for the Arnoldi and Lanczos iterations. A single pass of modified GS is not always enough.",
+ question:"What is the difference between classical and modified Gram-Schmidt?",
+ answer:"Classical GS computes all projections from the original column. Modified GS updates the vector after each projection, which keeps the intermediate vector smaller and reduces cancellation.",
+ demo:"gram-schmidt",sample:"1 1 0\n1 0 1\n0 1 1",
+ refs:[["Wikipedia, Gram-Schmidt process","https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process"],["Trefethen and Bau, Lecture 8","https://www.siam.org/Publications/Books/Book-Details/numerical-linear-algebra"],["Gander, Golub, von Matt, A constrained eigenvalue problem","https://doi.org/10.1016/0024-3795(89)90023-2"]]},
+{id:"householder-givens",title:"Householder reflections and Givens rotations",level:4,kind:"Orthogonalization",status:"Runnable teaching lab",
+ summary:"A Householder reflection is an orthogonal matrix that zeroes out all but the first entry of a vector. A Givens rotation is an orthogonal matrix that zeroes out a single entry. Both are used to build QR and to reduce matrices to simpler forms.",
+ mental:"A mirror that reflects one vector onto the axis",
+ mentalText:"A Householder matrix is like a mirror. It reflects a vector so that only one coordinate remains. A Givens rotation is like a small gear that turns one pair of coordinates at a time.",
+ steps:["Householder: given x, form v = x - alpha e_1 with alpha = -sign(x_1) ||x||.","H = I - 2 v v^T / (v^T v).","Apply H to A from the left to zero out column entries below the diagonal.","Givens: choose c and s so that the rotation zeroes out one entry.","Apply the rotation to rows i and k."],
+ pseudo:"Householder:\n  alpha = -sign(x_1) * ||x||_2\n  v = x - alpha * e_1\n  H = I - 2 v v^T / (v^T v)\n\nProperties:\n  H is symmetric and orthogonal\n  H^2 = I\n  H x = alpha * e_1\n\nGivens rotation G(i, j, theta):\n  identity except G[i][i] = c, G[i][j] = s, G[j][i] = -s, G[j][j] = c\n  c^2 + s^2 = 1\n\nChoosing c and s to zero out A[j][k]:\n  r = sqrt(A[i][k]^2 + A[j][k]^2)\n  c = A[i][k] / r, s = A[j][k] / r",
+ invariant:"Both transformations are orthogonal. Applying them does not change the 2 norm of any vector or column.",
+ uses:"QR decomposition, Hessenberg reduction, tridiagonalization, computing eigenvalues, GMRES and Arnoldi.",
+ strength:"Numerically stable. Householder is efficient for dense matrices. Givens is efficient for sparse matrices or when only a few entries need zeroing.",
+ limits:"Householder processes a whole column at a time. Givens processes one entry at a time, which is slower for dense but more flexible.",
+ pitfall:"Sign of alpha matters. Choosing alpha with the same sign as x_1 causes cancellation. Always use alpha = -sign(x_1) ||x||.",
+ question:"Why is a Householder matrix called a reflection?",
+ answer:"It is a mirror. It reflects x across the hyperplane perpendicular to v, and it satisfies H^2 = I, exactly like a reflection.",
+ demo:"householder-givens",sample:"1 2 3\n4 5 6\n7 8 10",
+ refs:[["Wikipedia, Householder transformation","https://en.wikipedia.org/wiki/Householder_transformation"],["Wikipedia, Givens rotation","https://en.wikipedia.org/wiki/Givens_rotation"],["Golub and Van Loan, Section 5.1","https://www.cs.cornell.edu/cv/GVL4/golubandvanloan.htm"]]},
+/* Chapter 5 */
+{id:"jacobi-gauss-seidel",title:"Jacobi and Gauss-Seidel iteration",level:3,kind:"Iterative solver",status:"Runnable teaching lab",
+ summary:"Jacobi and Gauss-Seidel solve a linear system by repeatedly improving an initial guess. Jacobi uses the previous iterate for all updates. Gauss-Seidel uses the newest values as soon as they are available.",
+ mental:"Guessing the answer and then improving it over and over",
+ mentalText:"Start with a rough guess. Use the equations to update each variable. Repeat. If the matrix is diagonally dominant, the guesses converge to the true solution.",
+ steps:["Split A into D + L + U with D the diagonal, L strictly lower, U strictly upper.","Jacobi: x_new = D^-1 (b - (L + U) x_old).","Gauss-Seidel: x_new = (D + L)^-1 (b - U x_old).","Iterate until the residual ||b - A x|| is below a tolerance."],
+ pseudo:"Split A = D + L + U\n\nJacobi:\n  x^{k+1} = D^{-1} (b - (L + U) x^k)\n\nGauss-Seidel:\n  x^{k+1} = (D + L)^{-1} (b - U x^k)\n\nConvergence condition:\n  A strictly diagonally dominant:\n    |A[i][i]| > sum over j != i of |A[i][j]| for all i\n  then both Jacobi and Gauss-Seidel converge for any starting guess\n\nGeneral condition:\n  spectral radius of the iteration matrix < 1",
+ invariant:"Both methods converge only when the iteration matrix has spectral radius less than one. Diagonal dominance is a simple sufficient condition.",
+ uses:"Large sparse systems, discretised partial differential equations, Poisson equation, image reconstruction.",
+ strength:"Simple to implement, small memory, no factorization needed.",
+ limits:"Slow convergence for ill conditioned matrices. Gauss-Seidel is sequential, so it does not parallelise easily.",
+ pitfall:"Using these methods on a non diagonally dominant matrix can diverge. Always check the spectral radius or use a safer method.",
+ question:"For a diagonally dominant matrix, does Gauss-Seidel usually converge faster than Jacobi?",
+ answer:"Yes. Gauss-Seidel typically converges about twice as fast for many problems, but the exact factor depends on the matrix.",
+ demo:"jacobi-gs",sample:"4 1 1\n1 4 1\n1 1 4\n\n6\n6\n6",
+ refs:[["Wikipedia, Jacobi method","https://en.wikipedia.org/wiki/Jacobi_method"],["Wikipedia, Gauss-Seidel method","https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method"],["Saad, Iterative Methods for Sparse Linear Systems, Chapter 4","https://www-users.cse.umn.edu/~saad/IterMethBook_2ndEd.pdf"]]},
+{id:"sor-cg",title:"SOR and conjugate gradient",level:4,kind:"Iterative solver",status:"Runnable teaching lab",
+ summary:"Successive over relaxation (SOR) adds a parameter omega to Gauss-Seidel to accelerate convergence. The conjugate gradient method finds the exact solution of a symmetric positive definite system in at most n steps and is the workhorse for large sparse SPD problems.",
+ mental:"Overstepping the correction to get there faster",
+ mentalText:"SOR takes the Gauss-Seidel correction and multiplies it by omega. If omega is between 1 and 2, the iteration often converges faster. Conjugate gradient picks search directions that are A orthogonal.",
+ steps:["SOR: choose omega in (0, 2) and apply the Gauss-Seidel update with an over relaxation factor.","For optimal omega, use the theory for the Jacobi iteration matrix spectrum.","Conjugate gradient: initialize r = b - A x, p = r.","At each step, compute Ap, take alpha = r^T r / p^T A p, update x and r, then compute the new beta and p."],
+ pseudo:"SOR update:\n  x_i^{new} = (1 - omega) x_i^{old} + omega * (b_i - sum_{j != i} A[i][j] x_j) / A[i][i]\n\nOptimal omega for a consistently ordered matrix:\n  omega_opt = 2 / (1 + sqrt(1 - rho^2))\n  where rho is the spectral radius of the Jacobi iteration matrix\n\nConjugate gradient (SPD A):\n  r_0 = b - A x_0\n  p_0 = r_0\n  for k = 0, 1, 2, ...:\n    Ap = A p_k\n    alpha = (r_k^T r_k) / (p_k^T Ap)\n    x_{k+1} = x_k + alpha p_k\n    r_{k+1} = r_k - alpha Ap\n    if ||r_{k+1}|| < tol: stop\n    beta = (r_{k+1}^T r_{k+1}) / (r_k^T r_k)\n    p_{k+1} = r_{k+1} + beta p_k",
+ invariant:"Conjugate gradient requires A symmetric positive definite. For indefinite or non symmetric matrices, use MINRES, GMRES or BiCGSTAB instead.",
+ uses:"Large sparse linear systems, finite element methods, image processing, optimisation, machine learning.",
+ strength:"Conjugate gradient converges in at most n steps in exact arithmetic. In practice it often converges much faster, especially with preconditioning.",
+ limits:"Requires SPD. For non symmetric systems, the short recurrence does not apply and a different method is needed.",
+ pitfall:"Running CG on a non SPD matrix can stall or diverge. Check that A is symmetric and positive definite before using it.",
+ question:"How many iterations does CG need in exact arithmetic to solve a system of size n?",
+ answer:"At most n iterations. In floating point more are needed because of rounding, but the convergence is usually fast if the matrix is well conditioned.",
+ demo:"sor-cg",sample:"4 1 1\n1 4 1\n1 1 4\n\n6\n6\n6",
+ refs:[["Wikipedia, Successive over-relaxation","https://en.wikipedia.org/wiki/Successive_over-relaxation"],["Wikipedia, Conjugate gradient method","https://en.wikipedia.org/wiki/Conjugate_gradient_method"],["Shewchuk, An Introduction to the Conjugate Gradient Method","https://www.cs.cmu.edu/~quake-papers/painless-conjugate-gradient.pdf"],["Saad, Chapter 6 on CG","https://www-users.cse.umn.edu/~saad/IterMethBook_2ndEd.pdf"]]},
+{id:"krylov",title:"Krylov methods: MINRES, GMRES, BiCGSTAB",level:5,kind:"Iterative solver",status:"Concept lesson",
+ summary:"Krylov subspace methods build a small subspace from repeated matrix vector products and look for the best solution inside that subspace. Different methods handle different matrix classes.",
+ mental:"Building a search space from scratch at each step",
+ mentalText:"Each iteration adds one more direction to a growing subspace. The method projects the problem onto that subspace and solves the small problem.",
+ steps:["Choose the method based on matrix structure.","Build the Krylov subspace K_m = span(b, A b, A^2 b, ...).","Use Arnoldi (non symmetric) or Lanczos (symmetric) to build an orthonormal basis.","Solve a small least squares or Galerkin problem in that subspace.","Check the residual and stop when small enough."],
+ pseudo:"Krylov subspace:\n  K_m(A, r_0) = span(r_0, A r_0, A^2 r_0, ..., A^{m-1} r_0)\n\nMINRES for symmetric (possibly indefinite) A:\n  minimises ||b - A x||_2 over the Krylov subspace\n  requires only short recurrence\n\nGMRES for general A:\n  minimises ||b - A x||_2 over the Krylov subspace\n  requires storing all previous basis vectors\n  restart every m steps to bound memory\n\nBiCGSTAB for general A:\n  uses two short recurrences\n  often faster than GMRES for non symmetric systems\n  may break down or stagnate",
+ uses:"Large sparse systems from PDE discretisations, computational fluid dynamics, structural analysis, electromagnetics.",
+ strength:"The matrix is only accessed through matrix vector products. No factorization needed. Very memory efficient for symmetric problems.",
+ limits:"GMRES memory grows with the number of iterations. BiCGSTAB can break down. None of them is a black box.",
+ pitfall:"GMRES without restart can use too much memory. GMRES with restart can stagnate. Choosing the restart length is a tuning problem.",
+ question:"What does GMRES minimise at each step?",
+ answer:"The 2 norm of the residual b - A x over the current Krylov subspace.",
+ demo:"none",sample:"",inputKind:"matrix",
+ refs:[["Saad, Iterative Methods for Sparse Linear Systems","https://www-users.cse.umn.edu/~saad/IterMethBook_2ndEd.pdf"],["Wikipedia, GMRES","https://en.wikipedia.org/wiki/Generalized_minimal_residual_method"],["Wikipedia, MINRES","https://en.wikipedia.org/wiki/Generalized_minimal_residual_method#MINRES"],["Wikipedia, BiCGSTAB","https://en.wikipedia.org/wiki/Biconjugate_gradient_stabilized_method"]]},
+/* Chapter 6 */
+{id:"csr-csc",title:"CSR and CSC sparse storage",level:3,kind:"Sparse storage",status:"Runnable teaching lab",
+ summary:"Compressed sparse row (CSR) and compressed sparse column (CSC) store only the nonzero entries of a matrix. CSR is fast for row access. CSC is fast for column access.",
+ mental:"A phone book that only lists the numbers that exist",
+ mentalText:"Most entries of a large sparse matrix are zero. Storing them wastes memory. Compressed formats store only the nonzeros plus a small amount of index data.",
+ steps:["Scan the matrix and collect the nonzeros in row major order for CSR.","Store the values and their column indices.","Store the row pointer that says where each row starts.","For CSC, do the same but in column major order."],
+ pseudo:"CSR format (3 arrays):\n  values      A.data[nnz]\n  col_index   A.indices[nnz]\n  row_ptr     A.indptr[n+1]\n\nRow i has entries from indptr[i] to indptr[i+1] - 1.\n\nExample matrix:\n  5 0 0 1\n  0 3 0 0\n  0 0 2 0\n  1 0 0 4\n\nCSR representation:\n  values    = [5, 1, 3, 2, 1, 4]\n  indices   = [0, 3, 1, 2, 0, 3]\n  indptr    = [0, 2, 3, 4, 6]\n\nMemory: O(nnz) instead of O(n^2)\nMatrix vector product y = A x:\n  for i in 0..n-1:\n    sum = 0\n    for k in indptr[i]..indptr[i+1]-1:\n      sum += values[k] * x[indices[k]]\n    y[i] = sum",
+ invariant:"The row pointer has length n+1 and starts at 0. It ends at nnz.",
+ uses:"Scientific computing libraries: scipy.sparse, SuiteSparse, PETSc, Trilinos. Sparse matrix vector products and sparse direct solvers.",
+ strength:"Compact storage and efficient matrix vector multiplication.",
+ limits:"Inserting new nonzeros is expensive because the arrays must be rebuilt. Different formats are better for different operations.",
+ pitfall:"Modifying a CSR matrix in place by inserting a nonzero is very slow. Use a coordinate (COO) format for assembly and convert to CSR once for solving.",
+ question:"How much memory does a CSR matrix use for a 1000 by 1000 matrix with 5000 nonzeros?",
+ answer:"About 5000 values plus 5000 column indices plus 1001 row pointers, roughly 11001 numbers instead of 1000000. This is a huge saving.",
+ demo:"csr-csc",sample:"5 0 0 1\n0 3 0 0\n0 0 2 0\n1 0 0 4",
+ refs:[["Wikipedia, Sparse matrix","https://en.wikipedia.org/wiki/Sparse_matrix"],["scipy.sparse CSR documentation","https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html"],["Davis, Direct Methods for Sparse Linear Systems","https://epubs.siam.org/doi/book/10.1137/1.9780898718881"],["SuiteSparse matrix collection","https://sparse.tamu.edu/"]]},
+{id:"ilu-amg",title:"Preconditioning: ILU, incomplete Cholesky and AMG",level:5,kind:"Preconditioning",status:"Concept lesson",
+ summary:"A preconditioner M approximates A so that the transformed system M^-1 A x = M^-1 b has better conditioning. Incomplete factorizations drop fill in. Algebraic multigrid uses a hierarchy of coarse grids.",
+ mental:"A rough map that guides you in the right direction",
+ mentalText:"Instead of solving the hard problem directly, solve an easier one that is close, and use the answer to speed up the hard one.",
+ steps:["Choose a preconditioner that is easy to apply and close to A.","Apply it inside each iteration of CG, GMRES or another Krylov method.","For ILU, compute an LU factorization and drop entries outside a pattern.","For AMG, build a hierarchy of coarse and fine grids and use smoothing between levels."],
+ pseudo:"Preconditioned CG for SPD A:\n  solve M z = r instead of using r directly\n\n  r_0 = b - A x_0, z_0 = M^{-1} r_0, p_0 = z_0\n  for k = 0, 1, 2, ...:\n    Ap = A p_k\n    alpha = (r_k^T z_k) / (p_k^T Ap)\n    x_{k+1} = x_k + alpha p_k\n    r_{k+1} = r_k - alpha Ap\n    z_{k+1} = M^{-1} r_{k+1}\n    beta = (r_{k+1}^T z_{k+1}) / (r_k^T z_k)\n    p_{k+1} = z_{k+1} + beta p_k\n\nILU(0): compute LU and keep only the sparsity pattern of A\nILU(k): allow fill in up to level k\nICT: incomplete Cholesky for SPD matrices\n\nAMG hierarchy:\n  fine grid -> coarse grid -> coarser grid -> ...\n  V-cycle: smooth, restrict, solve, prolong, smooth",
+ uses:"Large sparse systems from finite element and finite difference discretisations. The preconditioner often decides whether the solver converges at all.",
+ strength:"Good preconditioning can reduce iteration count by a factor of 10 to 100.",
+ limits:"More complex to implement than the base solver. Some preconditioners are not easy to parallelize.",
+ pitfall:"A very good preconditioner is expensive to build. There is a tradeoff between setup cost and iteration cost. Measure the total time.",
+ question:"What does a preconditioner do?",
+ answer:"It transforms the linear system so that the Krylov method converges faster, while keeping the solution unchanged.",
+ demo:"none",sample:"",inputKind:"matrix",
+ refs:[["Wikipedia, Preconditioner","https://en.wikipedia.org/wiki/Preconditioner"],["Saad, Chapter 10 on preconditioning","https://www-users.cse.umn.edu/~saad/IterMethBook_2ndEd.pdf"],["Wikipedia, Algebraic multigrid","https://en.wikipedia.org/wiki/Multigrid_method"],["hypre library documentation","https://hypre.readthedocs.io/"]]},
+{id:"domain-decomposition",title:"Domain decomposition",level:5,kind:"Parallel method",status:"Concept lesson",
+ summary:"Domain decomposition splits a large problem into smaller subproblems that can be solved independently and then coupled through interfaces. It is a natural fit for parallel computing.",
+ mental:"Cutting a big puzzle into pieces and solving each piece",
+ mentalText:"Each processor handles one piece of the domain. The pieces exchange boundary information at the interfaces until they agree on a global solution.",
+ steps:["Partition the domain into subdomains, overlapping or not.","Solve each subproblem independently with a local solver.","Exchange interface data between neighbouring subdomains.","Iterate until the interface conditions converge.","Assemble the global solution."],
+ pseudo:"Overlapping Schwarz (additive):\n  for each subdomain i:\n    solve A_i u_i^{k+1/2} = f_i with boundary data from u^k\n  combine with weights:\n    u^{k+1} = sum_i R_i^T D_i u_i^{k+1/2}\n\nNon overlapping (substructuring):\n  eliminate interior unknowns, solve for interface unknowns\n\nCoarse grid correction is essential for scalability:\n  without it, iteration count grows with the number of subdomains",
+ uses:"Parallel PDE solvers, structural analysis, computational fluid dynamics, reservoir simulation, electromagnetic scattering.",
+ strength:"Natural parallel decomposition. Good scalability with the right coarse space.",
+ limits:"Iteration count often grows with the number of subdomains unless a coarse correction is used.",
+ pitfall:"Without a coarse grid, overlapping Schwarz on many subdomains converges very slowly. The coarse space is what makes the method scale.",
+ question:"Why is a coarse grid correction important in domain decomposition?",
+ answer:"It carries global information between distant subdomains. Without it, information only travels through local interfaces and iteration count grows with the number of subdomains.",
+ demo:"none",sample:"",inputKind:"matrix",
+ refs:[["Wikipedia, Domain decomposition methods","https://en.wikipedia.org/wiki/Domain_decomposition_methods"],["Smith, Bjorstad, Gropp, Domain Decomposition","https://www.cambridge.org/core/books/domain-decomposition/"],["Toselli and Widlund, Domain Decomposition Methods","https://link.springer.com/book/10.1007/b137868"],["PETSc documentation","https://petsc.org/"]]},
+/* Chapter 7 */
+{id:"strassen",title:"Strassen and Winograd matrix multiplication",level:4,kind:"Fast matrix multiplication",status:"Runnable teaching lab",
+ summary:"Strassen showed that two 2 by 2 matrices can be multiplied with 7 multiplications instead of 8. Recursively this gives O(n^2.807) asymptotic complexity. Winograd further reduced the number of additions.",
+ mental:"Doing more additions so you can skip a multiplication",
+ mentalText:"Multiplications are more expensive than additions in many architectures. Trading one multiplication for several additions is a good deal.",
+ steps:["Split each matrix into four blocks.","Compute 7 products instead of 8 using Strassen's formulas.","Combine the products to get the four blocks of the result.","Recurse on blocks until they are small enough for the naive algorithm."],
+ pseudo:"Strassen 2x2 formulas:\n  M1 = (A11 + A22) (B11 + B22)\n  M2 = (A21 + A22) B11\n  M3 = A11 (B12 - B22)\n  M4 = A22 (B21 - B11)\n  M5 = (A11 + A12) B22\n  M6 = (A21 - A11) (B11 + B12)\n  M7 = (A12 - A22) (B21 + B22)\n\n  C11 = M1 + M4 - M5 + M7\n  C12 = M3 + M5\n  C21 = M2 + M4\n  C22 = M1 - M3 + M2 + M6\n\nNaive cost: 2 n^3 flops\nStrassen cost: about n^2.807 flops asymptotically",
+ uses:"Dense matrix multiplication when n is very large. Used in some BLAS libraries at large sizes.",
+ strength:"Asymptotically faster than the naive algorithm.",
+ limits:"Larger constant factor. Less numerical stability than the naive algorithm. In practice the naive algorithm wins for small n.",
+ pitfall:"Strassen is not numerically stable in the same way as the classical algorithm. For very ill conditioned matrices the results can be worse.",
+ question:"Why does Strassen's algorithm use 7 multiplications instead of 8?",
+ answer:"The combination of sums and differences lets one product be shared between two of the output blocks, saving one multiplication at the cost of extra additions.",
+ demo:"strassen",sample:"1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16",
+ refs:[["Wikipedia, Strassen algorithm","https://en.wikipedia.org/wiki/Strassen_algorithm"],["Wikipedia, Computational complexity of matrix multiplication","https://en.wikipedia.org/wiki/Computational_complexity_of_matrix_multiplication"],["Higham, Chapter 23 on fast matrix multiplication","https://epubs.siam.org/doi/book/10.1137/1.9780898718027"],["Blaser, Fast Matrix Multiplication (survey)","https://theoryofcomputing.org/articles/v009a012/"]]},
+{id:"kronecker-hadamard",title:"Kronecker and Hadamard products",level:4,kind:"Matrix products",status:"Runnable teaching lab",
+ summary:"The Kronecker product expands a matrix by replacing each entry with a scaled copy of a second matrix. The Hadamard product multiplies entry by entry.",
+ mental:"Blowing up a matrix by replacing each entry with a small picture",
+ mentalText:"For Kronecker, each entry of A becomes a copy of B scaled by that entry. For Hadamard, the two matrices must have the same shape and you multiply them entry by entry.",
+ steps:["Kronecker: check sizes m by n and p by q. The result is m p by n q.","Kronecker: for each (i, j) in A, place A[i][j] times B in block (i, j).","Hadamard: check that A and B have the same shape.","Hadamard: multiply entry by entry."],
+ pseudo:"Kronecker product:\n  (A kron B)[i p + k][j q + l] = A[i][j] * B[k][l]\n\n  Shape: (m p) by (n q)\n\nProperties:\n  (A kron B)(C kron D) = (AC) kron (BD)\n  (A kron B)^{-1} = A^{-1} kron B^{-1}\n  (A kron B)^T = A^T kron B^T\n  eigenvalues of A kron B are products lambda_i * mu_j\n\nHadamard (elementwise) product:\n  (A .* B)[i][j] = A[i][j] * B[i][j]\n\n  Shape: same as A and B\n  Properties: commutative, associative, distributive",
+ uses:"Kronecker in signal processing, tensor calculus, quantum computing, image operations, and separable transforms. Hadamard in neural networks, statistics and machine learning.",
+ strength:"Kronecker expresses separability elegantly. Hadamard is fast and easy to parallelise.",
+ limits:"Kronecker blows up the matrix dimensions fast. Hadamard only applies to matrices of the same shape.",
+ pitfall:"Kronecker product is not commutative. A kron B is different from B kron A, even though they have the same shape.",
+ question:"If A is 2 by 3 and B is 4 by 5, what is the shape of A kron B?",
+ answer:"8 by 15. Multiply the rows and columns separately.",
+ demo:"kronecker-hadamard",sample:"1 2\n3 4",
+ refs:[["Wikipedia, Kronecker product","https://en.wikipedia.org/wiki/Kronecker_product"],["Wikipedia, Hadamard product","https://en.wikipedia.org/wiki/Hadamard_product_(matrices)"],["Van Loan, The ubiquitous Kronecker product","https://doi.org/10.1016/S0377-0427(00)00393-9"]]},
+{id:"matrix-functions",title:"Matrix exponential and logarithm",level:5,kind:"Matrix function",status:"Runnable teaching lab",
+ summary:"The matrix exponential e^A is defined by the same Taylor series as the scalar exponential. It solves linear differential equations and appears in Markov chains and control theory.",
+ mental:"Applying a scalar function to a matrix",
+ mentalText:"The exponential of a matrix acts on each eigenvector by applying the scalar exponential to the corresponding eigenvalue. For non diagonalizable matrices the definition uses the Taylor series.",
+ steps:["Scale the matrix so that its norm is small.","Apply the Taylor series or a Padé approximant.","Square the result repeatedly to undo the scaling.","Verify the result by checking that exp(A) exp(-A) = I."],
+ pseudo:"Definition:\n  exp(A) = I + A + A^2 / 2! + A^3 / 3! + ...\n\nDiagonal case:\n  if A = V D V^{-1}, exp(A) = V exp(D) V^{-1}\n\nScaling and squaring:\n  choose s so that ||A / 2^s|| is small\n  compute exp(A / 2^s) with a Taylor or Pade approximant\n  square s times to get exp(A)\n\nMatrix logarithm:\n  inverse of exp\n  exists when A has no negative real eigenvalues\n  computed via Schur form and a Pade approximant",
+ uses:"Solving dx/dt = A x, Markov chains (transition matrices), Lie groups, control theory, quantum mechanics, physics simulation.",
+ strength:"A single primitive with many applications.",
+ limits:"Computing exp(A) accurately is difficult for matrices with large norm. Scaling and squaring with Padé is the standard method.",
+ pitfall:"Do not compute exp(A) by exponentiating each entry of A. That is not the matrix exponential and gives the wrong answer.",
+ question:"What is the exponential of a diagonal matrix?",
+ answer:"A diagonal matrix whose entries are the exponentials of the original diagonal entries.",
+ demo:"matrix-functions",sample:"0 1\n-1 0",
+ refs:[["Wikipedia, Matrix exponential","https://en.wikipedia.org/wiki/Matrix_exponential"],["Wikipedia, Matrix logarithm","https://en.wikipedia.org/wiki/Logarithm_of_a_matrix"],["Higham, Functions of Matrices","https://epubs.siam.org/doi/book/10.1137/1.9780898717778"],["Moler and Van Loan, Nineteen Dubious Ways to Compute the Exponential of a Matrix","https://doi.org/10.1137/S00361445024180"]]},
+/* Chapter 8 */
+{id:"matrix-inverse",title:"Matrix inverse and Gauss-Jordan",level:2,kind:"Direct method",status:"Runnable teaching lab",
+ summary:"The inverse A^-1 satisfies A A^-1 = A^-1 A = I. It exists only for square nonsingular matrices. Gauss-Jordan elimination computes it by augmenting A with the identity and eliminating both directions.",
+ mental:"Undoing a linear transformation",
+ mentalText:"If A transforms x to y, then A^-1 transforms y back to x. Not every matrix can be inverted, because some transformations lose information.",
+ steps:["Form the augmented matrix [A | I].","Apply row operations to reduce A to the identity.","The right half becomes A^-1.","Verify by computing A A^-1 and checking it is close to I."],
+ pseudo:"Augmented matrix: [A | I]\nRow operations to reduce left side to I, applying same to right side:\n  for each pivot column k:\n    swap rows to bring a good pivot to the diagonal\n    scale row k so pivot is 1\n    eliminate all other rows in column k\nResult: [I | A^{-1}]\n\nCost: 2 n^3 flops (twice LU)\n\nVerify: ||A A^{-1} - I|| should be near machine epsilon\n\nWarning: never compute the inverse to solve A x = b.\nUse LU or Cholesky instead. The inverse is less stable.",
+ invariant:"A is invertible if and only if its determinant is nonzero, which is equivalent to all pivots being nonzero, which is equivalent to the columns being linearly independent.",
+ uses:"Explicit inverse when many right hand sides are needed and the matrix is not reused. Formulas in linear algebra, statistics and physics.",
+ strength:"Direct and simple. Useful for theory and small problems.",
+ limits:"Numerically less stable than solving the system directly. Never solve A x = b as x = A^-1 b in production code.",
+ pitfall:"Computing the inverse explicitly and then multiplying by b is slower and less accurate than solving with LU or Cholesky. Do not do it unless you truly need the inverse.",
+ question:"When should you compute a matrix inverse explicitly?",
+ answer:"Almost never. Solve systems with LU or Cholesky. Compute the inverse only when you need the entries themselves, for example in a formula or for a covariance matrix.",
+ demo:"matrix-inverse",sample:"4 3 2\n2 5 1\n6 1 4",
+ refs:[["Wikipedia, Invertible matrix","https://en.wikipedia.org/wiki/Invertible_matrix"],["Wikipedia, Gauss-Jordan elimination","https://en.wikipedia.org/wiki/Gaussian_elimination#Finding_the_inverse_of_a_matrix"],["Higham, Chapter 14 on matrix inverse","https://epubs.siam.org/doi/book/10.1137/1.9780898718027"]]},
+{id:"sherman-morrison",title:"Sherman-Morrison and Woodbury formulas",level:4,kind:"Low rank update",status:"Runnable teaching lab",
+ summary:"The Sherman-Morrison formula updates the inverse of a matrix after a rank one change. Woodbury generalizes this to rank k updates. Both avoid refactoring from scratch.",
+ mental:"Patching an existing inverse instead of rebuilding it",
+ mentalText:"If you have A^-1 and A changes by a rank one matrix u v^T, you can patch A^-1 with a simple formula instead of refactoring.",
+ steps:["Start with an existing factorization or inverse of A.","Compute the rank one or rank k update.","Apply the Sherman-Morrison or Woodbury formula.","Verify by multiplying the updated inverse by the updated matrix."],
+ pseudo:"Sherman-Morrison (rank one update):\n  (A + u v^T)^{-1} = A^{-1} - (A^{-1} u v^T A^{-1}) / (1 + v^T A^{-1} u)\n\nValid when 1 + v^T A^{-1} u is not zero.\n\nWoodbury (rank k update with U, V of shape n by k):\n  (A + U V^T)^{-1} = A^{-1} - A^{-1} U (I_k + V^T A^{-1} U)^{-1} V^T A^{-1}\n\nThe inner matrix is only k by k, so the small inverse is cheap.\n\nCost: O(n^2) instead of O(n^3) for a full refactor.",
+ uses:"Sequential least squares, Kalman filters, optimisation (BFGS updates), adding constraints to a system, updating a factorization after a small change.",
+ strength:"Huge savings when many small updates are made to the same matrix.",
+ limits:"Only applies to rank one or low rank updates. Numerically less stable than refactoring.",
+ pitfall:"If 1 + v^T A^-1 u is close to zero, the formula blows up. In that case the updated matrix is nearly singular.",
+ question:"What is the main use of the Sherman-Morrison formula?",
+ answer:"To update an inverse after a rank one change without recomputing the full inverse.",
+ demo:"sherman-morrison",sample:"4 3 2\n2 5 1\n6 1 4",
+ refs:[["Wikipedia, Sherman-Morrison formula","https://en.wikipedia.org/wiki/Sherman%E2%80%93Morrison_formula"],["Wikipedia, Woodbury matrix identity","https://en.wikipedia.org/wiki/Woodbury_matrix_identity"],["Golub and Van Loan, Section 2.1.3","https://www.cs.cornell.edu/cv/GVL4/golubandvanloan.htm"]]},
+{id:"pseudoinverse",title:"Pseudoinverse and least squares",level:4,kind:"Generalized inverse",status:"Runnable teaching lab",
+ summary:"The Moore-Penrose pseudoinverse A^+ exists for any matrix and gives the minimum norm least squares solution of A x = b. It is computed from the SVD as A^+ = V Sigma^+ U^T.",
+ mental:"The best inverse you can get when a true inverse does not exist",
+ mentalText:"If A is not square or is rank deficient, there is no true inverse. The pseudoinverse gives the closest thing and solves least squares problems with the smallest solution norm.",
+ steps:["Compute the SVD A = U Sigma V^T.","Form Sigma^+ by inverting the nonzero singular values and transposing.","Compute A^+ = V Sigma^+ U^T.","The least squares solution is x = A^+ b."],
+ pseudo:"SVD: A = U Sigma V^T\n\nPseudoinverse:\n  Sigma^+ is n by m diagonal\n  Sigma^+[i][i] = 1 / sigma_i  if sigma_i > tolerance\n  Sigma^+[i][i] = 0             otherwise\n\n  A^+ = V Sigma^+ U^T\n\nProperties:\n  A A^+ A = A\n  A^+ A A^+ = A^+\n  (A A^+)^T = A A^+\n  (A^+ A)^T = A^+ A\n\nLeast squares solution:\n  x = A^+ b minimises ||A x - b||_2\n  and has the smallest 2 norm among all minimisers\n\nTolerance choice: sigma_i > eps * max(m, n) * sigma_max",
+ uses:"Least squares, rank deficient systems, regularisation, computer vision, machine learning, control theory.",
+ strength:"Exists for any matrix. Handles underdetermined and overdetermined systems uniformly.",
+ limits:"Computing the SVD is expensive for large matrices. Choosing the tolerance for small singular values requires care.",
+ pitfall:"Setting all singular values below machine epsilon to zero can remove genuine signal. The tolerance must be chosen based on the problem.",
+ question:"When is the pseudoinverse the same as the true inverse?",
+ answer:"When A is square and nonsingular. Then all singular values are positive and Sigma^+ inverts them, giving A^+ = A^-1.",
+ demo:"pseudoinverse",sample:"1 2 3\n4 5 6",
+ refs:[["Wikipedia, Moore-Penrose inverse","https://en.wikipedia.org/wiki/Moore%E2%80%93Penrose_inverse"],["Golub and Van Loan, Section 5.5","https://www.cs.cornell.edu/cv/GVL4/golubandvanloan.htm"],["LAPACK dgelsd","https://netlib.org/lapack/lug/node27.html"]]},
+/* Chapter 9 */
+{id:"toeplitz",title:"Toeplitz matrices and the Levinson recursion",level:4,kind:"Structured matrix",status:"Runnable teaching lab",
+ summary:"A Toeplitz matrix has constant diagonals. It is defined by its first row and first column. The Levinson recursion solves Toeplitz systems in O(n^2) operations instead of O(n^3).",
+ mental:"A matrix where every diagonal is a single value",
+ mentalText:"Each entry depends only on the difference between its row and column indices. This special structure allows much faster algorithms.",
+ steps:["Check that A is Toeplitz. Every entry A[i][j] depends only on i minus j.","Store the first row and column instead of the full matrix.","Use the Levinson-Durbin recursion to solve the system in O(n^2).","Or use the Trench algorithm to compute the inverse in O(n^2)."],
+ pseudo:"Toeplitz matrix:\n  A[i][j] = t_{i - j}\n\n  first row:     t_0, t_{-1}, t_{-2}, ..., t_{-(n-1)}\n  first column:  t_0, t_1, t_2, ..., t_{n-1}\n\nLevinson-Durbin:\n  solve Toeplitz system in O(n^2) time\n  uses a recursion that adds one equation at a time\n\nTrench algorithm:\n  compute the inverse of a Toeplitz matrix in O(n^2)\n\nMatrix vector product:\n  can be done in O(n log n) with the FFT by embedding in a circulant",
+ uses:"Signal processing (convolution, filtering), time series (Yule-Walker equations), coding theory, numerical PDEs.",
+ strength:"O(n^2) solve and O(n log n) matrix vector product. Much faster than dense general methods.",
+ limits:"Requires exact Toeplitz structure. Small perturbations destroy the speed advantage.",
+ pitfall:"The Levinson recursion is only stable for positive definite Toeplitz matrices. For indefinite Toeplitz matrices a different algorithm is needed.",
+ question:"How much faster is the Levinson recursion than Gaussian elimination for a Toeplitz system?",
+ answer:"O(n^2) instead of O(n^3). For n = 1000, that is a factor of about 1000.",
+ demo:"toeplitz",sample:"4 3 2 1\n5 4 3 2\n6 5 4 3\n7 6 5 4",
+ refs:[["Wikipedia, Toeplitz matrix","https://en.wikipedia.org/wiki/Toeplitz_matrix"],["Wikipedia, Levinson recursion","https://en.wikipedia.org/wiki/Levinson_recursion"],["Golub and Van Loan, Section 4.7","https://www.cs.cornell.edu/cv/GVL4/golubandvanloan.htm"]]},
+{id:"bareiss",title:"Bareiss elimination",level:4,kind:"Exact elimination",status:"Runnable teaching lab",
+ summary:"Bareiss elimination is a variant of Gaussian elimination that keeps all intermediate values as integers when the input matrix has integer entries. It computes the determinant exactly without fractions.",
+ mental:"Elimination without ever leaving the integers",
+ mentalText:"The naive Gaussian elimination produces fractions. Bareiss uses a specific two step update that keeps everything integral by dividing by the previous pivot at the right moment.",
+ steps:["Start with an integer matrix.","Use the Bareiss update formula for each elimination step.","The pivots and entries stay integers throughout.","The determinant is the final pivot."],
+ pseudo:"Bareiss update:\n  a[i][j] = (a[i][j] * a[k][k] - a[i][k] * a[k][j]) / a[k-1][k-1]\n\n  with a[-1][-1] = 1 at the start.\n\nThe division is exact when the input is integer.\n\nResult:\n  after elimination the last diagonal entry equals det(A)\n  for an n by n matrix with no pivoting\n\nPartial pivoting version:\n  same formula but with row swaps\n  determinant sign changes with each swap",
+ invariant:"The division by the previous pivot is exact. This is guaranteed by Sylvester's identity for the determinants of submatrices.",
+ uses:"Exact integer linear algebra, Smith normal form computation, solving Diophantine systems, computer algebra systems.",
+ strength:"Exact for integer matrices. No fractions. Determinant is available for free.",
+ limits:"Only applies to integer matrices. Intermediate entries can grow large before the exact division reduces them.",
+ pitfall:"Without pivoting, Bareiss can fail on some matrices. Use the pivoting version for general integer matrices.",
+ question:"Why does Bareiss elimination stay integer?",
+ answer:"The division by the previous pivot is exactly a determinant ratio. By Sylvester's identity this ratio is always an integer for an integer matrix.",
+ demo:"bareiss",sample:"2 1 3\n4 3 1\n2 5 2",
+ refs:[["Wikipedia, Bareiss algorithm","https://en.wikipedia.org/wiki/Bareiss_algorithm"],["Wikipedia, Sylvester's determinant identity","https://en.wikipedia.org/wiki/Sylvester%27s_determinant_identity"],["Bareiss, Sylvester's identity and multistep integer-preserving Gaussian elimination","https://doi.org/10.1090/S0025-5718-1968-0226829-0"]]},
+{id:"smith-hermite",title:"Smith and Hermite normal forms",level:5,kind:"Exact matrix form",status:"Concept lesson",
+ summary:"The Smith normal form is a diagonal form reached by integer row and column operations. The Hermite normal form is a triangular form reached by integer row operations only. Both are exact and used in integer linear algebra.",
+ mental:"Reducing an integer matrix to its simplest exact shape",
+ mentalText:"Using only integer invertible transformations, bring the matrix to a canonical form. This reveals the structure of the integer lattice generated by the rows or columns.",
+ steps:["Smith: apply integer row and column operations to make the matrix diagonal.","The diagonal entries are the invariant factors and satisfy d_1 divides d_2 divides d_3 ...","Hermite: apply only row operations to make the matrix triangular.","The result is unique under certain normalization."],
+ pseudo:"Smith normal form:\n  S = U A V with U and V unimodular (integer, det = 1)\n  S is diagonal\n  S[i][i] divides S[i+1][i+1]\n\n  Invariant factors S[i][i] are unique.\n  The product of S[i][i] is det(A) up to sign.\n\nHermite normal form:\n  H = U A with U unimodular\n  H is upper triangular\n  Entries below the diagonal are zero\n  Entries above the diagonal are reduced modulo the pivot\n\nUses:\n  Smith for integer lattice structure, group theory, Diophantine equations\n  Hermite for lattice basis reduction, integer programming, cryptography",
+ uses:"Integer programming, lattice based cryptography, computer algebra, group theory, solving systems over the integers.",
+ strength:"Exact. Reveals deep structure of integer matrices.",
+ limits:"Coefficients can grow very large. General algorithms are expensive.",
+ pitfall:"Computing Smith normal form naively can produce enormous intermediate entries. Use modular methods or specialized libraries.",
+ question:"What does the Smith normal form tell you about the matrix?",
+ answer:"It gives the invariant factors, which describe the structure of the integer lattice generated by the rows or columns.",
+ demo:"none",sample:"",inputKind:"matrix",
+ refs:[["Wikipedia, Smith normal form","https://en.wikipedia.org/wiki/Smith_normal_form"],["Wikipedia, Hermite normal form","https://en.wikipedia.org/wiki/Hermite_normal_form"],["Cohen, A Course in Computational Algebraic Number Theory","https://link.springer.com/book/10.1007/978-3-662-02945-9"]]},
+/* Chapter 10 */
+{id:"randomized-svd",title:"Randomized SVD",level:5,kind:"Large scale algorithm",status:"Runnable teaching lab",
+ summary:"Randomized SVD approximates the top singular values and vectors of a large matrix by multiplying it by a small random matrix and doing SVD on the small result. It is much faster than the full SVD for low rank matrices.",
+ mental:"Take a random sample of the columns and work with that",
+ mentalText:"If the matrix has low rank, a random projection captures most of the important information. Solve a small problem and lift the answer back up.",
+ steps:["Draw a random matrix Omega of size n by k plus a few extra columns.","Compute Y = A Omega.","Compute an orthonormal basis Q for the range of Y.","Form the small matrix B = Q^T A.","Compute the SVD of B.","Recover the approximate SVD of A from Q and the SVD of B."],
+ pseudo:"Randomized SVD (one pass with power iterations):\n  Omega = random n by (k + p)\n  Y = A Omega\n  for q iterations:   (power iteration for accuracy)\n    Y = A (A^T Y)\n  Q = orthonormalize(Y)\n  B = Q^T A\n  [U_B, Sigma_B, V_B] = svd(B)\n  U = Q U_B\n\nApproximation error depends on the decay of the singular values\nand the oversampling parameter p.\n\nCost: O(m n k) instead of O(m n min(m, n)) for the full SVD.",
+ uses:"PCA on very large data sets, low rank approximation, latent semantic analysis, background subtraction in video, recommendation systems.",
+ strength:"Huge speedup when the matrix has rapidly decaying singular values.",
+ limits:"Approximation is approximate. Very slowly decaying singular values need more samples or power iterations.",
+ pitfall:"Choosing k too small misses important structure. Always oversample by 5 to 10 and check the decay of the estimated singular values.",
+ question:"How many random samples do you need for randomized SVD?",
+ answer:"k plus an oversampling parameter (typically 5 to 10) where k is the target rank.",
+ demo:"randomized-svd",sample:"1 2 3 4 5\n2 3 4 5 6\n3 4 5 6 7\n4 5 6 7 8",
+ refs:[["Halko, Martinsson, Tropp, Finding Structure with Randomness","https://doi.org/10.1137/090771806"],["Wikipedia, Randomized SVD","https://en.wikipedia.org/wiki/Randomized_singular_value_decomposition"],["scikit-learn randomized_svd","https://scikit-learn.org/stable/modules/generated/sklearn.utils.extmath.randomized_svd.html"]]},
+{id:"sketching",title:"Sketching and streaming algorithms",level:5,kind:"Randomized numerical",status:"Concept lesson",
+ summary:"A sketch is a small data structure that summarises a large matrix or stream. It lets you answer questions like approximate matrix multiplication or regression in one pass.",
+ mental:"A tiny summary that captures the important part",
+ mentalText:"Instead of storing the whole matrix, store a random projection of it. Many quantities can be computed approximately from the projection.",
+ steps:["Choose a sketching matrix S, often a sparse or structured random matrix.","Compute the sketch S A or A S.","Run your algorithm on the sketch instead of the full matrix.","Translate the answer back."],
+ pseudo:"Approximate matrix multiplication:\n  S is a k by m sketching matrix, usually very sparse\n  compute S A and S B\n  estimate (A B) from (S A)(B) or other combinations\n\nStreaming linear regression:\n  maintain a sketch of the design matrix\n  solve the small regression on the sketch\n\nSketches used:\n  CountSketch (very sparse)\n  Subsampled Randomized Hadamard Transform (SRHT)\n  Gaussian random matrix (dense, theoretical)\n\nTradeoffs:\n  sparse sketches are fast but less accurate\n  dense sketches are slower but provably good",
+ uses:"Streaming data, one pass algorithms on huge matrices, distributed computation, numerical linear algebra at scale.",
+ strength:"Sublinear memory. One pass over the data.",
+ limits:"Approximate answers. Accuracy depends on the sketch size and the data.",
+ pitfall:"A sketch that is too small loses too much information. The sketch size must scale with the target rank and the desired accuracy.",
+ question:"What is the main advantage of sketching?",
+ answer:"You can compute approximate answers to matrix problems in one pass with much less memory than storing the full matrix.",
+ demo:"none",sample:"",inputKind:"matrix",
+ refs:[["Woodruff, Sketching as a Tool for Numerical Linear Algebra","https://doi.org/10.1561/0400000060"],["Wikipedia, Count sketch","https://en.wikipedia.org/wiki/Count_sketch"],["Mahoney, Randomized algorithms for matrices and data","https://arxiv.org/abs/1104.5557"]]},
+{id:"cannon-summa",title:"Cannon and SUMMA parallel matrix multiplication",level:5,kind:"Parallel algorithm",status:"Concept lesson",
+ summary:"Cannon's algorithm and SUMMA distribute matrix multiplication over a grid of processors. Cannon uses a systolic skew pattern. SUMMA uses broadcasts of panels and scales better with the grid.",
+ mental:"Passing pieces around a grid of workers",
+ mentalText:"Each processor holds one block of A, one block of B and one block of C. Blocks rotate around the grid so that every processor sees the pairs it needs.",
+ steps:["Partition A, B and C into p by p blocks matching the processor grid.","Cannon: skew A left and B up, then each step multiply the local blocks and rotate A left, B up.","SUMMA: broadcast panels of A along rows and B along columns, then accumulate.","At the end each processor has its own block of C."],
+ pseudo:"Cannon's algorithm for a p by p processor grid:\n  Initial alignment:\n    rotate A[i][j] left by i\n    rotate B[i][j] up by j\n  for k = 0 to p-1:\n    C[i][j] += A[i][j] * B[i][j]\n    rotate A[i][j] left by 1\n    rotate B[i][j] up by 1\n\nSUMMA:\n  for k = 0 to p-1:\n    broadcast A[.][k] along the row\n    broadcast B[k][.] along the column\n    each processor multiplies local blocks and accumulates into C\n\nSUMMA supports rectangular grids and is more flexible.\nCannon requires a square grid of processors.",
+ uses:"Distributed dense matrix multiplication on clusters, high performance computing, machine learning at scale.",
+ strength:"Good parallel efficiency. Well understood communication patterns.",
+ limits:"Cannon requires a square grid. SUMMA has more communication but is more flexible.",
+ pitfall:"Communication dominates at large scale. The block size must be large enough to make the computation per byte of communication worthwhile.",
+ question:"Why is Cannon's algorithm a natural fit for a square grid of processors?",
+ answer:"The rotation pattern matches the grid. Each processor rotates its block left or up, and after p steps every processor has seen all the pairs it needs.",
+ demo:"none",sample:"",inputKind:"matrix",
+ refs:[["Wikipedia, Cannon's algorithm","https://en.wikipedia.org/wiki/Cannon%27s_algorithm"],["Van de Geijn and Watts, SUMMA","https://doi.org/10.1109/71.598279"],["BLAS and PBLAS reference","https://netlib.org/blas/"],["Van de Geijn and Slagter, High Performance Parallel Matrix Computations","https://www.cs.utexas.edu/~rvdg/"]]}
+];
+
+const LESSONS=RAW.map(mk);
+const byId=Object.fromEntries(LESSONS.map(x=>[x.id,x]));
+
+/* ============================================================
+   Code examples
+   ============================================================ */
+const CODE={
+ "matrix-basics":{python:`import numpy as np\n\nA = np.array([\n    [4.0, 1.0, 2.0],\n    [1.0, 3.0, 0.0],\n    [2.0, 0.0, 5.0],\n])\n\nprint("shape:", A.shape)\nprint("transpose:\\n", A.T)\nprint("trace:", np.trace(A))\nprint("determinant:", np.linalg.det(A))\nprint("rank:", np.linalg.matrix_rank(A))\nprint("Frobenius norm:", np.linalg.norm(A, "fro"))\nprint("1 norm (max column sum):", np.linalg.norm(A, 1))\nprint("infinity norm (max row sum):", np.linalg.norm(A, np.inf))\nprint("2 norm (largest singular value):", np.linalg.norm(A, 2))\nprint("condition number:", np.linalg.cond(A))\n`},
+ "vector-norms":{python:`import numpy as np\n\nx = np.array([3.0, -4.0, 0.0, 5.0])\n\nprint("1 norm       :", np.linalg.norm(x, 1))\nprint("2 norm       :", np.linalg.norm(x, 2))\nprint("infinity norm:", np.linalg.norm(x, np.inf))\nprint("unit vector  :", x / np.linalg.norm(x, 2))\n\n# The bounds between norms hold\nn = x.size\nprint("bound check 1: ||x||_2 <= ||x||_1         :", np.linalg.norm(x, 2) <= np.linalg.norm(x, 1))\nprint("bound check 2: ||x||_1 <= sqrt(n) * ||x||_2:", np.linalg.norm(x, 1) <= np.sqrt(n) * np.linalg.norm(x, 2))\n`},
+ "conditioning":{python:`import numpy as np\nfrom scipy.linalg import hilbert\n\nprint("Condition number of the Hilbert matrix as n grows:")\nfor n in (5, 8, 10, 12, 14):\n    H = hilbert(n)\n    print(f"  n = {n:>2}  cond = {np.linalg.cond(H):.3e}")\n\n# Solving an ill conditioned system\nn = 10\nH = hilbert(n)\nx_true = np.ones(n)\nb = H @ x_true\nx_computed = np.linalg.solve(H, b)\nprint()\nprint("true solution:", x_true[:4], "...")\nprint("computed     :", x_computed[:4], "...")\nprint("max error    :", np.max(np.abs(x_computed - x_true)))\nprint("cond estimate:", np.linalg.cond(H))\nprint("The number of reliable digits is roughly 16 - log10(cond).")\n`},
+ "gaussian-elimination":{python:`import numpy as np\n\n\ndef gauss_solve(A, b):\n    n = len(A)\n    M = np.hstack([A.astype(float), b.reshape(-1, 1)])\n    # forward elimination with partial pivoting\n    for k in range(n - 1):\n        p = k + int(np.argmax(np.abs(M[k:, k])))\n        if p != k:\n            M[[k, p]] = M[[p, k]]\n        for i in range(k + 1, n):\n            m = M[i, k] / M[k, k]\n            M[i, k:] -= m * M[k, k:]\n    # back substitution\n    x = np.zeros(n)\n    for i in range(n - 1, -1, -1):\n        x[i] = (M[i, -1] - M[i, i+1:n] @ x[i+1:n]) / M[i, i]\n    return x\n\n\nA = np.array([\n    [2.0, 1.0, -1.0],\n    [-3.0, -1.0, 2.0],\n    [-2.0, 1.0, 2.0],\n])\nb = np.array([8.0, -11.0, -3.0])\n\nx = gauss_solve(A, b)\nprint("solution:", x)\nprint("residual:", np.linalg.norm(A @ x - b))\nprint("numpy check:", np.linalg.solve(A, b))\n`},
+ "lu":{python:`import numpy as np\nfrom scipy.linalg import lu, lu_factor, lu_solve\n\nA = np.array([\n    [4.0, 3.0, 2.0],\n    [2.0, 5.0, 1.0],\n    [6.0, 1.0, 4.0],\n])\n\nP, L, U = lu(A)\nprint("P:\\n", P)\nprint("L:\\n", L)\nprint("U:\\n", U)\nprint("PA - LU max error:", np.max(np.abs(P @ A - L @ U)))\nprint("det(A) from U   :", np.prod(np.diag(U)) * np.linalg.det(P))\n\n# Solve for multiple right hand sides with one factorization\nb1 = np.array([1.0, 2.0, 3.0])\nb2 = np.array([4.0, 5.0, 6.0])\nlu_piv = lu_factor(A)\nx1 = lu_solve(lu_piv, b1)\nx2 = lu_solve(lu_piv, b2)\nprint("solution for b1:", x1)\nprint("solution for b2:", x2)\n`},
+ "cholesky":{python:`import numpy as np\n\nA = np.array([\n    [4.0, 2.0, 2.0],\n    [2.0, 5.0, 1.0],\n    [2.0, 1.0, 3.0],\n])\n\n# Check symmetry and definiteness\nprint("symmetric:", np.allclose(A, A.T))\nprint("eigenvalues:", np.linalg.eigvalsh(A))\n\nL = np.linalg.cholesky(A)\nprint("L:\\n", L)\nprint("LL^T - A max error:", np.max(np.abs(L @ L.T - A)))\n\n# Solve with Cholesky\nb = np.array([1.0, 2.0, 3.0])\ny = np.linalg.solve(L, b)\nx = np.linalg.solve(L.T, y)\nprint("solution:", x)\nprint("residual:", np.linalg.norm(A @ x - b))\n`},
+ "qr":{python:`import numpy as np\n\nA = np.array([\n    [1.0, 2.0, 3.0],\n    [4.0, 5.0, 6.0],\n    [7.0, 8.0, 10.0],\n])\n\nQ, R = np.linalg.qr(A)\nprint("Q:\\n", Q)\nprint("R:\\n", R)\nprint("QR - A max error:", np.max(np.abs(Q @ R - A)))\nprint("Q^T Q - I max error:", np.max(np.abs(Q.T @ Q - np.eye(Q.shape[1]))))\nprint("R is upper triangular:", np.allclose(R, np.triu(R)))\n`},
+ "eigen":{python:`import numpy as np\n\nA = np.array([\n    [4.0, 1.0, 2.0],\n    [1.0, 3.0, 0.0],\n    [2.0, 0.0, 5.0],\n])\n\n# Symmetric matrix, use eigh for real eigenvalues and orthonormal eigenvectors\nevals, evecs = np.linalg.eigh(A)\nprint("eigenvalues:", evals)\nprint("eigenvectors:\\n", evecs)\n\n# Verify each eigenvalue and eigenvector\nfor i in range(len(evals)):\n    v = evecs[:, i]\n    lam = evals[i]\n    residual = np.linalg.norm(A @ v - lam * v)\n    print(f"lambda {i} = {lam:.6f}  residual = {residual:.2e}")\n\n# Reconstruct A = V D V^T\nA_rec = evecs @ np.diag(evals) @ evecs.T\nprint("A reconstruction error:", np.max(np.abs(A - A_rec)))\n`},
+ "svd":{python:`import numpy as np\n\nA = np.array([\n    [1.0, 2.0, 3.0],\n    [4.0, 5.0, 6.0],\n])\n\nU, s, Vt = np.linalg.svd(A, full_matrices=False)\nprint("U:\\n", U)\nprint("singular values:", s)\nprint("Vt:\\n", Vt)\n\n# Verify A = U diag(s) Vt\nA_rec = U @ np.diag(s) @ Vt\nprint("reconstruction error:", np.max(np.abs(A - A_rec)))\n\n# 2 norm and Frobenius norm from the singular values\nprint("||A||_2 =", s[0])\nprint("||A||_F =", np.sqrt(np.sum(s ** 2)))\nprint("rank   =", np.sum(s > 1e-12))\nprint("condition number =", s[0] / s[-1] if s[-1] > 0 else float("inf"))\n\n# Best rank 1 approximation\nA1 = s[0] * np.outer(U[:, 0], Vt[0])\nprint("rank 1 approximation error:", np.linalg.norm(A - A1, "fro"))\n`},
+ "gram-schmidt":{python:`import numpy as np\n\n\ndef classical_gs(A):\n    m, n = A.shape\n    Q = np.zeros((m, n))\n    R = np.zeros((n, n))\n    for j in range(n):\n        v = A[:, j].copy()\n        for i in range(j):\n            R[i, j] = Q[:, i] @ A[:, j]\n            v = v - R[i, j] * Q[:, i]\n        R[j, j] = np.linalg.norm(v)\n        Q[:, j] = v / R[j, j]\n    return Q, R\n\n\ndef modified_gs(A):\n    m, n = A.shape\n    Q = np.zeros((m, n))\n    R = np.zeros((n, n))\n    V = A.astype(float).copy()\n    for j in range(n):\n        for i in range(j):\n            R[i, j] = Q[:, i] @ V[:, j]\n            V[:, j] = V[:, j] - R[i, j] * Q[:, i]\n        R[j, j] = np.linalg.norm(V[:, j])\n        Q[:, j] = V[:, j] / R[j, j]\n    return Q, R\n\n\nA = np.array([\n    [1.0, 1.0, 0.0],\n    [1.0, 0.0, 1.0],\n    [0.0, 1.0, 1.0],\n])\n\nfor name, gs in (("classical", classical_gs), ("modified", modified_gs)):\n    Q, R = gs(A)\n    orth_err = np.max(np.abs(Q.T @ Q - np.eye(A.shape[1])))\n    rec_err = np.max(np.abs(Q @ R - A))\n    print(f"{name:<10}  orthogonality error = {orth_err:.2e}  reconstruction error = {rec_err:.2e}")\n`},
+ "householder-givens":{python:`import numpy as np\n\n\ndef householder_qr(A):\n    m, n = A.shape\n    R = A.astype(float).copy()\n    Q = np.eye(m)\n    for k in range(min(m - 1, n)):\n        x = R[k:, k]\n        alpha = -np.sign(x[0] if x[0] != 0 else 1.0) * np.linalg.norm(x)\n        v = x.copy()\n        v[0] -= alpha\n        vnorm2 = v @ v\n        if vnorm2 < 1e-14:\n            continue\n        # Apply H = I - 2 v v^T / v^T v to R\n        R[k:, k:] -= 2.0 * np.outer(v, v @ R[k:, k:]) / vnorm2\n        # Apply same to Q on the right to build Q^T\n        Q[:, k:] -= 2.0 * np.outer(Q[:, k:] @ v, v) / vnorm2\n    return Q.T, R\n\n\nA = np.array([\n    [1.0, 2.0, 3.0],\n    [4.0, 5.0, 6.0],\n    [7.0, 8.0, 10.0],\n])\n\nQ, R = householder_qr(A)\nprint("Q:\\n", Q)\nprint("R:\\n", R)\nprint("QR - A max error:", np.max(np.abs(Q @ R - A)))\nprint("Q^T Q - I max error:", np.max(np.abs(Q.T @ Q - np.eye(Q.shape[1]))))\n`},
+ "jacobi-gs":{python:`import numpy as np\n\n\ndef jacobi(A, b, tol=1e-10, maxiter=1000):\n    n = len(A)\n    x = np.zeros(n)\n    D = np.diag(A)\n    R = A - np.diag(D)\n    hist = []\n    for _ in range(maxiter):\n        x = (b - R @ x) / D\n        r = np.linalg.norm(b - A @ x)\n        hist.append(r)\n        if r < tol:\n            break\n    return x, hist\n\n\ndef gauss_seidel(A, b, tol=1e-10, maxiter=1000):\n    n = len(A)\n    x = np.zeros(n)\n    hist = []\n    for _ in range(maxiter):\n        for i in range(n):\n            s = b[i] - sum(A[i, j] * x[j] for j in range(n) if j != i)\n            x[i] = s / A[i, i]\n        r = np.linalg.norm(b - A @ x)\n        hist.append(r)\n        if r < tol:\n            break\n    return x, hist\n\n\nA = np.array([\n    [4.0, 1.0, 1.0],\n    [1.0, 4.0, 1.0],\n    [1.0, 1.0, 4.0],\n])\nb = np.array([6.0, 6.0, 6.0])\n\nfor name, method in (("Jacobi", jacobi), ("Gauss-Seidel", gauss_seidel)):\n    x, hist = method(A, b)\n    print(f"{name:<14} iterations = {len(hist):>4}  residual = {hist[-1]:.3e}  x = {x}")\n`},
+ "sor-cg":{python:`import numpy as np\n\n\ndef sor(A, b, omega=1.2, tol=1e-10, maxiter=1000):\n    n = len(A)\n    x = np.zeros(n)\n    hist = []\n    for _ in range(maxiter):\n        for i in range(n):\n            s = b[i] - sum(A[i, j] * x[j] for j in range(n) if j != i)\n            x[i] = (1 - omega) * x[i] + omega * s / A[i, i]\n        r = np.linalg.norm(b - A @ x)\n        hist.append(r)\n        if r < tol:\n            break\n    return x, hist\n\n\ndef conjugate_gradient(A, b, tol=1e-10, maxiter=1000):\n    n = len(A)\n    x = np.zeros(n)\n    r = b - A @ x\n    p = r.copy()\n    rs_old = r @ r\n    hist = [np.sqrt(rs_old)]\n    for _ in range(maxiter):\n        Ap = A @ p\n        alpha = rs_old / (p @ Ap)\n        x = x + alpha * p\n        r = r - alpha * Ap\n        rs_new = r @ r\n        hist.append(np.sqrt(rs_new))\n        if np.sqrt(rs_new) < tol:\n            break\n        p = r + (rs_new / rs_old) * p\n        rs_old = rs_new\n    return x, hist\n\n\nA = np.array([\n    [4.0, 1.0, 1.0],\n    [1.0, 4.0, 1.0],\n    [1.0, 1.0, 4.0],\n])\nb = np.array([6.0, 6.0, 6.0])\n\nfor name, method in (("SOR omega=1.2", lambda A, b: sor(A, b, 1.2)), ("Conjugate gradient", conjugate_gradient)):\n    x, hist = method(A, b)\n    print(f"{name:<20} iterations = {len(hist):>4}  final residual = {hist[-1]:.3e}")\n`},
+ "csr-csc":{python:`import numpy as np\nfrom scipy import sparse\n\nA = np.array([\n    [5.0, 0.0, 0.0, 1.0],\n    [0.0, 3.0, 0.0, 0.0],\n    [0.0, 0.0, 2.0, 0.0],\n    [1.0, 0.0, 0.0, 4.0],\n])\n\ncsr = sparse.csr_matrix(A)\nprint("CSR data       :", csr.data)\nprint("CSR indices    :", csr.indices)\nprint("CSR indptr     :", csr.indptr)\nprint("nnz            :", csr.nnz)\nprint("density        :", csr.nnz / (A.shape[0] * A.shape[1]))\n\ncsc = sparse.csc_matrix(A)\nprint("CSC data       :", csc.data)\nprint("CSC indices    :", csc.indices)\nprint("CSC indptr     :", csc.indptr)\n\n# Efficient matrix vector product\nx = np.array([1.0, 2.0, 3.0, 4.0])\nprint("A @ x          :", csr @ x)\nprint("matches dense  :", np.allclose(csr @ x, A @ x))\n`},
+ "strassen":{python:`import numpy as np\n\n\ndef mat_add(A, B):\n    return A + B\n\n\ndef mat_sub(A, B):\n    return A - B\n\n\ndef strassen(A, B):\n    n = A.shape[0]\n    if n <= 2:\n        return A @ B\n    h = n // 2\n    A11, A12, A21, A22 = A[:h, :h], A[:h, h:], A[h:, :h], A[h:, h:]\n    B11, B12, B21, B22 = B[:h, :h], B[:h, h:], B[h:, :h], B[h:, h:]\n\n    M1 = strassen(A11 + A22, B11 + B22)\n    M2 = strassen(A21 + A22, B11)\n    M3 = strassen(A11, B12 - B22)\n    M4 = strassen(A22, B21 - B11)\n    M5 = strassen(A11 + A12, B22)\n    M6 = strassen(A21 - A11, B11 + B12)\n    M7 = strassen(A12 - A22, B21 + B22)\n\n    C11 = M1 + M4 - M5 + M7\n    C12 = M3 + M5\n    C21 = M2 + M4\n    C22 = M1 - M3 + M2 + M6\n\n    C = np.zeros((n, n))\n    C[:h, :h], C[:h, h:] = C11, C12\n    C[h:, :h], C[h:, h:] = C21, C22\n    return C\n\n\nn = 4\nA = np.arange(1.0, n * n + 1).reshape(n, n)\nB = A[::-1].copy()\nprint("A:\\n", A)\nprint("B:\\n", B)\nprint("Strassen result:\\n", strassen(A, B))\nprint("naive result:\\n", A @ B)\nprint("max difference:", np.max(np.abs(strassen(A, B) - A @ B)))\n`},
+ "kronecker-hadamard":{python:`import numpy as np\n\nA = np.array([[1.0, 2.0], [3.0, 4.0]])\nB = np.array([[0.0, 5.0], [6.0, 7.0]])\n\nK = np.kron(A, B)\nprint("Kronecker A kron B:\\n", K)\nprint("shape:", K.shape)\n\nH = A * B\nprint("Hadamard A .* B:\\n", H)\nprint("shape:", H.shape)\n\n# Kronecker eigenvalues are products\nA_sym = np.array([[2.0, 1.0], [1.0, 2.0]])\nB_sym = np.array([[3.0, 0.0], [0.0, 5.0]])\nev_A = np.linalg.eigvalsh(A_sym)\nev_B = np.linalg.eigvalsh(B_sym)\nev_K = np.linalg.eigvalsh(np.kron(A_sym, B_sym))\nprint("eigenvalues of A:", ev_A)\nprint("eigenvalues of B:", ev_B)\nprint("eigenvalues of A kron B:", np.sort(ev_K))\nprint("products            :", np.sort(np.outer(ev_A, ev_B).flatten()))\n`},
+ "matrix-functions":{python:`import numpy as np\nfrom scipy.linalg import expm, logm\n\nA = np.array([\n    [0.0, 1.0],\n    [-1.0, 0.0],\n])\n\nE = expm(A)\nprint("exp(A):\\n", E)\nprint("shape:", E.shape)\n\n# exp(A) should be a rotation matrix by angle 1\nprint("orthogonal:", np.allclose(E.T @ E, np.eye(2)))\nprint("det:", np.linalg.det(E))\n\n# Verify by Taylor series\nI = np.eye(2)\ntaylor = I + A + A @ A / 2 + A @ A @ A / 6\nprint("Taylor approximation:\\n", taylor)\nprint("difference from scipy:", np.max(np.abs(taylor - E)))\n\n# Matrix logarithm inverts the exponential\nL = logm(E)\nprint("log(exp(A)):\\n", L)\nprint("matches A:", np.allclose(L, A))\n`},
+ "matrix-inverse":{python:`import numpy as np\nfrom scipy.linalg import lu_factor, lu_solve\n\nA = np.array([\n    [4.0, 3.0, 2.0],\n    [2.0, 5.0, 1.0],\n    [6.0, 1.0, 4.0],\n])\n\nA_inv = np.linalg.inv(A)\nprint("A^-1:\\n", A_inv)\nprint("A A^-1 - I max error:", np.max(np.abs(A @ A_inv - np.eye(3))))\n\n# Never solve a system with the explicit inverse\nb = np.array([1.0, 2.0, 3.0])\n\n# Bad: using the inverse\nx_bad = A_inv @ b\n\n# Good: using LU\nlu_piv = lu_factor(A)\nx_good = lu_solve(lu_piv, b)\n\nprint("x via inverse:", x_bad)\nprint("x via LU     :", x_good)\nprint("difference   :", np.max(np.abs(x_bad - x_good)))\nprint("residual via inverse:", np.linalg.norm(A @ x_bad - b))\nprint("residual via LU     :", np.linalg.norm(A @ x_good - b))\n`},
+ "sherman-morrison":{python:`import numpy as np\n\n\ndef sherman_morrison(A_inv, u, v):\n    """Return (A + u v^T)^{-1} given A^{-1}."""\n    denom = 1.0 + v @ A_inv @ u\n    if abs(denom) < 1e-14:\n        raise ValueError("update is singular")\n    return A_inv - np.outer(A_inv @ u, v @ A_inv) / denom\n\n\nA = np.array([\n    [4.0, 3.0, 2.0],\n    [2.0, 5.0, 1.0],\n    [6.0, 1.0, 4.0],\n])\nA_inv = np.linalg.inv(A)\n\nu = np.array([1.0, 0.0, -1.0])\nv = np.array([0.5, 2.0, 1.0])\n\nA_new = A + np.outer(u, v)\nA_inv_updated = sherman_morrison(A_inv, u, v)\nA_inv_direct = np.linalg.inv(A_new)\n\nprint("Sherman-Morrison result:\\n", A_inv_updated)\nprint("Direct inverse of A + u v^T:\\n", A_inv_direct)\nprint("max difference:", np.max(np.abs(A_inv_updated - A_inv_direct)))\n`},
+ "pseudoinverse":{python:`import numpy as np\n\nA = np.array([\n    [1.0, 2.0, 3.0],\n    [4.0, 5.0, 6.0],\n])\n\nA_plus = np.linalg.pinv(A)\nprint("A^+ shape:", A_plus.shape)\n\n# Verify the four Moore-Penrose properties\nI_m = np.eye(A.shape[0])\nI_n = np.eye(A.shape[1])\nprint("A A^+ A == A       :", np.allclose(A @ A_plus @ A, A))\nprint("A^+ A A^+ == A^+   :", np.allclose(A_plus @ A @ A_plus, A_plus))\nprint("(A A^+)^T == A A^+ :", np.allclose((A @ A_plus).T, A @ A_plus))\nprint("(A^+ A)^T == A^+ A :", np.allclose((A_plus @ A).T, A_plus @ A))\n\n# Least squares solution\nb = np.array([1.0, 2.0])\nx = A_plus @ b\nprint("least squares solution:", x)\nprint("residual:", np.linalg.norm(A @ x - b))\n\n# Compare with numpy lstsq\nx2, res, rank, sv = np.linalg.lstsq(A, b, rcond=None)\nprint("numpy lstsq solution  :", x2)\n`},
+ "toeplitz":{python:`import numpy as np\nfrom scipy.linalg import solve_toeplitz\n\n# Toeplitz matrix defined by its first column and first row\nc = np.array([4.0, 5.0, 6.0, 7.0])   # first column\nr = np.array([4.0, 3.0, 2.0, 1.0])   # first row, c[0] must equal r[0]\n\n# Build the full Toeplitz matrix for demonstration\nfrom scipy.linalg import toeplitz\nA = toeplitz(c, r)\nprint("Toeplitz matrix:\\n", A)\nprint("Every diagonal is constant:")\nfor d in range(-3, 4):\n    diag = np.diag(A, d)\n    print(f"  diagonal {d:>2}: {diag}")\n\n# Solve in O(n^2) using the Levinson recursion\nb = np.array([1.0, 2.0, 3.0, 4.0])\nx = solve_toeplitz((c, r), b)\nprint("solution:", x)\nprint("residual:", np.linalg.norm(A @ x - b))\n`},
+ "bareiss":{python:`def bareiss_det(A):\n    """Compute the determinant exactly for an integer matrix."""\n    A = [row[:] for row in A]\n    n = len(A)\n    sign = 1\n    prev = 1\n    for k in range(n - 1):\n        # partial pivoting\n        if A[k][k] == 0:\n            for i in range(k + 1, n):\n                if A[i][k] != 0:\n                    A[k], A[i] = A[i], A[k]\n                    sign = -sign\n                    break\n            else:\n                return 0\n        for i in range(k + 1, n):\n            for j in range(k + 1, n):\n                A[i][j] = (A[i][j] * A[k][k] - A[i][k] * A[k][j]) // prev\n        prev = A[k][k]\n    return sign * A[n - 1][n - 1]\n\n\nA = [\n    [2, 1, 3],\n    [4, 3, 1],\n    [2, 5, 2],\n]\nprint("determinant (exact)   :", bareiss_det(A))\n\nimport numpy as np\nprint("determinant (float)   :", np.linalg.det(np.array(A, dtype=float)))\nprint("difference            :", abs(bareiss_det(A) - np.linalg.det(A)))\n`},
+ "randomized-svd":{python:`import numpy as np\nfrom sklearn.utils.extmath import randomized_svd\n\n# Build a low rank matrix\nm, n, k_true = 100, 80, 5\nU_true = np.random.randn(m, k_true)\nV_true = np.random.randn(n, k_true)\nS_true = np.diag([10.0, 5.0, 2.0, 1.0, 0.5])\nA = U_true @ S_true @ V_true.T\n\n# Full SVD\nU_full, s_full, Vt_full = np.linalg.svd(A, full_matrices=False)\nprint("full SVD singular values:", s_full[:8])\n\n# Randomized SVD with k = 8\nU_r, s_r, Vt_r = randomized_svd(A, n_components=8, n_iter=4, random_state=0)\nprint("randomized singular values:", s_r)\n\n# Approximation error\nA_approx = U_r @ np.diag(s_r) @ Vt_r\nprint("Frobenius error:", np.linalg.norm(A - A_approx, "fro"))\nprint("relative error :", np.linalg.norm(A - A_approx, "fro") / np.linalg.norm(A, "fro"))\n`},
+};
+
+/* ============================================================
+   Numerical linear algebra library (teaching implementations)
+   ============================================================ */
+function matCopy(A){return A.map(r=>r.slice())}
+function eye(n){return Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?1:0))}
+function zeros(n,m){return Array.from({length:n},()=>new Array(m).fill(0))}
+function matAdd(A,B){return A.map((row,i)=>row.map((v,j)=>v+B[i][j]))}
+function matSub(A,B){return A.map((row,i)=>row.map((v,j)=>v-B[i][j]))}
+function matMul(A,B){
+ const n=A.length,k=B.length,m=B[0].length;
+ const C=zeros(n,m);
+ for(let i=0;i<n;i++)for(let j=0;j<m;j++){let s=0;for(let p=0;p<k;p++)s+=A[i][p]*B[p][j];C[i][j]=s}
+ return C;
+}
+function matTranspose(A){return A[0].map((_,j)=>A.map(r=>r[j]))}
+function matVecMul(A,x){return A.map(row=>row.reduce((s,v,i)=>s+v*x[i],0))}
+function dot(a,b){return a.reduce((s,v,i)=>s+v*b[i],0)}
+function norm1(v){return v.reduce((s,x)=>s+Math.abs(x),0)}
+function norm2(v){return Math.sqrt(dot(v,v))}
+function normInf(v){return Math.max(...v.map(Math.abs))}
+function frob(A){let s=0;for(const r of A)for(const x of r)s+=x*x;return Math.sqrt(s)}
+function trace(A){let s=0;for(let i=0;i<A.length;i++)s+=A[i][i];return s}
+
+function luDecomp(A){
+ const n=A.length;
+ const U=matCopy(A);
+ const L=eye(n);
+ const P=eye(n);
+ let sign=1;
+ for(let k=0;k<n;k++){
+  let maxV=Math.abs(U[k][k]),maxI=k;
+  for(let i=k+1;i<n;i++)if(Math.abs(U[i][k])>maxV){maxV=Math.abs(U[i][k]);maxI=i}
+  if(maxV<1e-14)continue;
+  if(maxI!==k){
+   [U[k],U[maxI]]=[U[maxI],U[k]];
+   [P[k],P[maxI]]=[P[maxI],P[k]];
+   for(let j=0;j<k;j++)[L[k][j],L[maxI][j]]=[L[maxI][j],L[k][j]];
+   sign=-sign;
+  }
+  for(let i=k+1;i<n;i++){
+   const m=U[i][k]/U[k][k];
+   L[i][k]=m;
+   for(let j=k;j<n;j++)U[i][j]-=m*U[k][j];
+  }
+ }
+ return{L,U,P,sign};
+}
+function detFromLU(lu){let d=lu.sign;for(let i=0;i<lu.U.length;i++)d*=lu.U[i][i];return d}
+
+function forwardSub(L,b){
+ const n=L.length;const x=new Array(n).fill(0);
+ for(let i=0;i<n;i++){
+  let s=b[i];
+  for(let j=0;j<i;j++)s-=L[i][j]*x[j];
+  x[i]=s/L[i][i];
+ }
+ return x;
+}
+function backSub(U,b){
+ const n=U.length;const x=new Array(n).fill(0);
+ for(let i=n-1;i>=0;i--){
+  let s=b[i];
+  for(let j=i+1;j<n;j++)s-=U[i][j]*x[j];
+  x[i]=s/U[i][i];
+ }
+ return x;
+}
+
+function cholesky(A){
+ const n=A.length;
+ const L=zeros(n,n);
+ for(let i=0;i<n;i++)for(let j=0;j<=i;j++){
+  let s=A[i][j];
+  for(let k=0;k<j;k++)s-=L[i][k]*L[j][k];
+  if(i===j){
+   if(s<=0)throw Error('Matrix is not positive definite');
+   L[i][j]=Math.sqrt(s);
+  } else {
+   if(L[j][j]<1e-14)throw Error('Zero pivot');
+   L[i][j]=s/L[j][j];
+  }
+ }
+ return L;
+}
+
+function qrHouseholder(A){
+ const m=A.length,n=A[0].length;
+ const R=matCopy(A);
+ const Qt=eye(m);
+ const steps=Math.min(m-1,n);
+ for(let k=0;k<steps;k++){
+  const x=[];
+  for(let i=k;i<m;i++)x.push(R[i][k]);
+  const xnorm=norm2(x);
+  if(xnorm<1e-14)continue;
+  const alpha=-Math.sign(x[0]||1)*xnorm;
+  const v=x.slice();v[0]-=alpha;
+  const vn2=dot(v,v);
+  if(vn2<1e-20)continue;
+  for(let j=k;j<n;j++){
+   let s=0;
+   for(let i=k;i<m;i++)s+=v[i-k]*R[i][j];
+   const f=2*s/vn2;
+   for(let i=k;i<m;i++)R[i][j]-=f*v[i-k];
+  }
+  for(let j=0;j<m;j++){
+   let s=0;
+   for(let i=k;i<m;i++)s+=v[i-k]*Qt[i][j];
+   const f=2*s/vn2;
+   for(let i=k;i<m;i++)Qt[i][j]-=f*v[i-k];
+  }
+ }
+ return{Q:matTranspose(Qt),R};
+}
+
+function gramSchmidt(A,modified){
+ const m=A.length,n=A[0].length;
+ const Q=zeros(m,n);
+ const R=zeros(n,n);
+ const cols=[];
+ for(let j=0;j<n;j++){
+  const aj=A.map(r=>r[j]);
+  let v=aj.slice();
+  for(let i=0;i<j;i++){
+   const qi=cols[i];
+   const target=modified?v:aj;
+   const r=dot(qi,target);
+   R[i][j]=r;
+   v=v.map((x,k)=>x-r*qi[k]);
+  }
+  const nrm=norm2(v);
+  if(nrm<1e-14)throw Error('Columns are linearly dependent');
+  R[j][j]=nrm;
+  cols[j]=v.map(x=>x/nrm);
+ }
+ for(let j=0;j<n;j++)for(let i=0;i<m;i++)Q[i][j]=cols[j][i];
+ return{Q,R};
+}
+
+function jacobiEigen(A){
+ const n=A.length;
+ const a=matCopy(A);
+ const V=eye(n);
+ for(let sweep=0;sweep<100;sweep++){
+  let off=0;
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)off+=a[i][j]*a[i][j];
+  if(Math.sqrt(2*off)<1e-14)break;
+  for(let p=0;p<n;p++)for(let q=p+1;q<n;q++){
+   if(Math.abs(a[p][q])<1e-15)continue;
+   const theta=(a[q][q]-a[p][p])/(2*a[p][q]);
+   const t=Math.sign(theta||1)/(Math.abs(theta)+Math.sqrt(theta*theta+1));
+   const c=1/Math.sqrt(t*t+1);
+   const s=t*c;
+   for(let i=0;i<n;i++){
+    const aip=a[i][p],aiq=a[i][q];
+    a[i][p]=c*aip-s*aiq;
+    a[i][q]=s*aip+c*aiq;
+   }
+   for(let i=0;i<n;i++){
+    const api=a[p][i],aqi=a[q][i];
+    a[p][i]=c*api-s*aqi;
+    a[q][i]=s*api+c*aqi;
+   }
+   for(let i=0;i<n;i++){
+    const vip=V[i][p],viq=V[i][q];
+    V[i][p]=c*vip-s*viq;
+    V[i][q]=s*vip+c*viq;
+   }
+  }
+ }
+ const eigenvalues=Array.from({length:n},(_,i)=>a[i][i]);
+ return{eigenvalues,eigenvectors:V};
+}
+
+function svdFromEigen(A){
+ const m=A.length,n=A[0].length;
+ const At=matTranspose(A);
+ const AtA=matMul(At,A);
+ const{eigenvalues,eigenvectors}=jacobiEigen(AtA);
+ const idx=eigenvalues.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]);
+ const sv=idx.map(([v,i])=>Math.sqrt(Math.max(0,v)));
+ // V is n by n, columns are right singular vectors
+ const V=Array.from({length:n},(_,i)=>idx.map(([_,j])=>eigenvectors[i][j]));
+ // U is m by min(m,n) with columns A v_i / sigma_i
+ const U=Array.from({length:m},(_,i)=>idx.map(([_,j],k)=>{
+  if(sv[k]<1e-14)return 0;
+  let s=0;
+  for(let p=0;p<n;p++)s+=A[i][p]*V[p][k];
+  return s/sv[k];
+ }));
+ return{U,sv,V};
+}
+
+function matInverse(A){
+ const n=A.length;
+ const M=A.map((row,i)=>[...row,...eye(n)[i]]);
+ for(let i=0;i<n;i++){
+  let maxV=Math.abs(M[i][i]),maxI=i;
+  for(let k=i+1;k<n;k++)if(Math.abs(M[k][i])>maxV){maxV=Math.abs(M[k][i]);maxI=k}
+  if(maxV<1e-14)throw Error('Matrix is singular');
+  [M[i],M[maxI]]=[M[maxI],M[i]];
+  const piv=M[i][i];
+  for(let j=0;j<2*n;j++)M[i][j]/=piv;
+  for(let k=0;k<n;k++){
+   if(k===i)continue;
+   const f=M[k][i];
+   for(let j=0;j<2*n;j++)M[k][j]-=f*M[i][j];
+  }
+ }
+ return M.map(row=>row.slice(n));
+}
+
+function matExp(A){
+ const n=A.length;
+ const nrm=Math.max(...A.map(row=>row.reduce((s,v)=>s+Math.abs(v),0)));
+ const s=Math.max(0,Math.ceil(Math.log2(nrm+1))+1);
+ const B=A.map(row=>row.map(v=>v/Math.pow(2,s)));
+ let result=eye(n);
+ let term=eye(n);
+ for(let k=1;k<30;k++){
+  term=matMul(term,B).map(row=>row.map(v=>v/k));
+  let newResult=result.map((row,i)=>row.map((v,j)=>v+term[i][j]));
+  result=newResult;
+  let tn=0;for(const row of term)for(const v of row)tn+=Math.abs(v);
+  if(tn<1e-16)break;
+ }
+ for(let i=0;i<s;i++)result=matMul(result,result);
+ return result;
+}
+
+function strassen(A,B){
+ const n=A.length;
+ if(n<=2)return matMul(A,B);
+ const h=n/2;
+ const A11=A.slice(0,h).map(r=>r.slice(0,h));
+ const A12=A.slice(0,h).map(r=>r.slice(h));
+ const A21=A.slice(h).map(r=>r.slice(0,h));
+ const A22=A.slice(h).map(r=>r.slice(h));
+ const B11=B.slice(0,h).map(r=>r.slice(0,h));
+ const B12=B.slice(0,h).map(r=>r.slice(h));
+ const B21=B.slice(h).map(r=>r.slice(0,h));
+ const B22=B.slice(h).map(r=>r.slice(h));
+ const M1=strassen(matAdd(A11,A22),matAdd(B11,B22));
+ const M2=strassen(matAdd(A21,A22),B11);
+ const M3=strassen(A11,matSub(B12,B22));
+ const M4=strassen(A22,matSub(B21,B11));
+ const M5=strassen(matAdd(A11,A12),B22);
+ const M6=strassen(matSub(A21,A11),matAdd(B11,B12));
+ const M7=strassen(matSub(A12,A22),matAdd(B21,B22));
+ const C11=matAdd(matSub(matAdd(M1,M4),M5),M7);
+ const C12=matAdd(M3,M5);
+ const C21=matAdd(M2,M4);
+ const C22=matAdd(matSub(matAdd(M1,M3),M2),M6);
+ const C=zeros(n,n);
+ for(let i=0;i<h;i++)for(let j=0;j<h;j++){
+  C[i][j]=C11[i][j];
+  C[i][j+h]=C12[i][j];
+  C[i+h][j]=C21[i][j];
+  C[i+h][j+h]=C22[i][j];
+ }
+ return C;
+}
+
+function kron(A,B){
+ const m=A.length,n=A[0].length,p=B.length,q=B[0].length;
+ const C=zeros(m*p,n*q);
+ for(let i=0;i<m;i++)for(let j=0;j<n;j++)for(let k=0;k<p;k++)for(let l=0;l<q;l++){
+  C[i*p+k][j*q+l]=A[i][j]*B[k][l];
+ }
+ return C;
+}
+function hadamard(A,B){return A.map((row,i)=>row.map((v,j)=>v*B[i][j]))}
+
+function jacobiIter(A,b,iters,tol){
+ const n=A.length;
+ let x=new Array(n).fill(0);
+ const hist=[];
+ for(let it=0;it<iters;it++){
+  const xn=new Array(n);
+  for(let i=0;i<n;i++){
+   let s=b[i];
+   for(let j=0;j<n;j++)if(j!==i)s-=A[i][j]*x[j];
+   xn[i]=s/A[i][i];
+  }
+  x=xn;
+  const r=A.map((row,i)=>row.reduce((s,v,j)=>s+v*x[j],0)-b[i]);
+  hist.push(norm2(r));
+  if(norm2(r)<tol)break;
+ }
+ return{x,hist};
+}
+function gaussSeidel(A,b,iters,tol,omega=1){
+ const n=A.length;
+ let x=new Array(n).fill(0);
+ const hist=[];
+ for(let it=0;it<iters;it++){
+  for(let i=0;i<n;i++){
+   let s=b[i];
+   for(let j=0;j<n;j++)if(j!==i)s-=A[i][j]*x[j];
+   x[i]=(1-omega)*x[i]+omega*s/A[i][i];
+  }
+  const r=A.map((row,i)=>row.reduce((s,v,j)=>s+v*x[j],0)-b[i]);
+  hist.push(norm2(r));
+  if(norm2(r)<tol)break;
+ }
+ return{x,hist};
+}
+function conjugateGradient(A,b,iters,tol){
+ const n=A.length;
+ let x=new Array(n).fill(0);
+ let r=b.slice();
+ let p=r.slice();
+ let rs=dot(r,r);
+ const hist=[Math.sqrt(rs)];
+ for(let it=0;it<iters;it++){
+  const Ap=matVecMul(A,p);
+  const alpha=rs/dot(p,Ap);
+  x=x.map((xi,i)=>xi+alpha*p[i]);
+  r=r.map((ri,i)=>ri-alpha*Ap[i]);
+  const rsNew=dot(r,r);
+  hist.push(Math.sqrt(rsNew));
+  if(Math.sqrt(rsNew)<tol)break;
+  const beta=rsNew/rs;
+  p=r.map((ri,i)=>ri+beta*p[i]);
+  rs=rsNew;
+ }
+ return{x,hist};
+}
+function powerIteration(A,iters){
+ const n=A.length;
+ let x=new Array(n).fill(0).map(()=>Math.random()*2-1);
+ x=x.map(v=>v/norm2(x));
+ let lambda=0;
+ for(let it=0;it<iters;it++){
+  const y=matVecMul(A,x);
+  lambda=dot(x,y);
+  const nrm=norm2(y);
+  if(nrm<1e-14)break;
+  x=y.map(v=>v/nrm);
+ }
+ return{lambda,x};
+}
+
+/* ============================================================
+   Formatting helpers
+   ============================================================ */
+function fmtNum(x,d=4){
+ if(!Number.isFinite(x))return String(x);
+ if(Math.abs(x)<1e-14)return '0';
+ if(Math.abs(x)>=1e6||Math.abs(x)<1e-4)return x.toExponential(d-1);
+ return parseFloat(x.toFixed(d)).toString();
+}
+function fmtMat(A,d=4,width=10){
+ if(!A.length)return '(empty)';
+ const strs=A.map(row=>row.map(x=>fmtNum(x,d)));
+ const w=Math.max(width,...strs.flat().map(s=>s.length))+1;
+ return strs.map(row=>row.map(s=>s.padStart(w)).join(' ')).join('\n');
+}
+function fmtVec(v,d=4){return v.map(x=>fmtNum(x,d)).join(', ')}
+
+/* ============================================================
+   Parsing
+   ============================================================ */
+function parseMatrix(s){
+ const rows=s.trim().split(/\n/).map(row=>row.trim()).filter(Boolean).map(row=>row.split(/[\s,]+/).filter(Boolean).map(Number));
+ if(!rows.length)throw Error('Enter a matrix with one row per line');
+ const cols=rows[0].length;
+ if(rows.some(r=>r.length!==cols))throw Error('All rows must have the same number of columns');
+ if(rows.some(r=>r.some(x=>!Number.isFinite(x))))throw Error('All entries must be numbers');
+ return rows;
+}
+function parseMatrixAndVector(s){
+ const blocks=s.trim().split(/\n\s*\n/);
+ if(blocks.length<2)throw Error('Enter the matrix rows, a blank line, then the right hand side vector');
+ const A=parseMatrix(blocks[0]);
+ const b=blocks[1].trim().split(/[\s,]+/).filter(Boolean).map(Number);
+ if(b.some(x=>!Number.isFinite(x)))throw Error('All vector entries must be numbers');
+ if(b.length!==A.length)throw Error('Vector length must match matrix size');
+ return{A,b};
+}
+function parseVector(s){
+ return s.trim().split(/[\s,]+/).filter(Boolean).map(Number);
+}
+
+/* ============================================================
+   Labs
+   ============================================================ */
+function demoMatrixBasics(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ const At=matTranspose(A);
+ const tr=trace(A);
+ let det='n/a (not square)';
+ if(m===n){try{const lu=luDecomp(A);det=fmtNum(detFromLU(lu))}catch(e){}}
+ const fro=frob(A);
+ const oneNorm=m===n?Math.max(...Array.from({length:n},(_,j)=>A.reduce((s,r)=>s+Math.abs(r[j]),0))):'n/a';
+ const infNorm=Math.max(...A.map(r=>r.reduce((s,v)=>s+Math.abs(v),0)));
+ const A2=norm2;
+ let cond='n/a';
+ if(m===n){
+  try{
+   const{U,sv}=svdFromEigen(A);
+   const smax=sv[0],smin=sv[sv.length-1];
+   if(smin>1e-14)cond=fmtNum(smax/smin,3);
+  }catch(e){}
+ }
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nA^T (${n} by ${m}):\n${fmtMat(At)}\n\ntrace(A)         = ${fmtNum(tr)}\nFrobenius norm   = ${fmtNum(fro)}\n1 norm (matrix)  = ${typeof oneNorm==='number'?fmtNum(oneNorm):oneNorm}\ninfinity norm    = ${fmtNum(infNorm)}\ndeterminant      = ${det}\ncondition number = ${cond}`,
+  decoded:`Matrix operations in one place. The transpose swaps rows and columns. The trace sums the diagonal. The determinant measures the volume scaling. The norms measure the size of the matrix in different ways.\n\nFrobenius norm is the square root of the sum of squares of all entries. The matrix 1 norm is the maximum absolute column sum. The matrix infinity norm is the maximum absolute row sum. The matrix 2 norm is the largest singular value.\n\nA large condition number means the matrix is close to singular and results are sensitive to input errors.`,
+  steps:m*n,units:1,tokens:1
+ };
+}
+
+function demoVectorNorms(text){
+ const v=parseVector(text);
+ if(!v.length)throw Error('Enter comma separated numbers');
+ const n1=norm1(v),n2=norm2(v),ni=normInf(v);
+ const u=v.map(x=>n2===0?0:x/n2);
+ return {
+  encoded:`vector (${v.length} entries): ${fmtVec(v)}\n\n1 norm        = ${fmtNum(n1)}\n2 norm        = ${fmtNum(n2)}\ninfinity norm = ${fmtNum(ni)}\nunit vector   = ${fmtVec(u)}\n||unit||_2    = ${fmtNum(norm2(u))}`,
+  decoded:`The 1 norm is the sum of absolute values, also called the taxicab distance. The 2 norm is the Euclidean length. The infinity norm is the largest absolute entry.\n\nBounds: ||x||_2 <= ||x||_1 <= sqrt(n) * ||x||_2. So all three norms are within a factor sqrt(n) of each other, but they can be very different for a particular vector.`,
+  steps:v.length,units:3,tokens:3
+ };
+}
+
+function demoConditioning(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ if(m!==n)throw Error('Condition number is defined for square matrices');
+ const{U,sv}=svdFromEigen(A);
+ const smax=sv[0],smin=sv[sv.length-1];
+ const cond=smin>1e-14?smax/smin:Infinity;
+ const digits=cond>0&&Number.isFinite(cond)?Math.max(0,16-Math.log10(cond)):16;
+ const rows=sv.map((s,i)=>`  sigma ${String(i+1).padStart(2)} = ${fmtNum(s,6)}`);
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nSingular values:\n${rows.join('\n')}\n\nlargest  sigma_max = ${fmtNum(smax,6)}\nsmallest sigma_min = ${fmtNum(smin,6)}\ncondition number   = ${fmtNum(cond,4)}\nreliable digits    = about ${fmtNum(digits,1)} (in double precision)`,
+  decoded:`The condition number measures how much the solution of A x = b can change when b or A changes slightly. A large condition number means the problem is ill conditioned and small errors get amplified.\n\nRule of thumb: if kappa is about 10^k, you lose about k digits of accuracy. Double precision has about 16 digits, so kappa = 10^10 leaves only about 6 reliable digits.\n\nThe Hilbert matrix is the classic example of an ill conditioned matrix. Its condition number grows exponentially with size.`,
+  steps:m*n,units:1,tokens:1
+ };
+}
+
+function demoGaussianElimination(text){
+ const{A,b}=parseMatrixAndVector(text);
+ if(A.length!==A[0].length)throw Error('Matrix must be square');
+ const n=A.length;
+ const M=A.map((row,i)=>[...row,b[i]]);
+ const steps=[];
+ for(let k=0;k<n-1;k++){
+  let maxV=Math.abs(M[k][k]),maxI=k;
+  for(let i=k+1;i<n;i++)if(Math.abs(M[i][k])>maxV){maxV=Math.abs(M[i][k]);maxI=i}
+  if(maxI!==k){
+   [M[k],M[maxI]]=[M[maxI],M[k]];
+   steps.push(`swap row ${k} and ${maxI}`);
+  }
+  if(Math.abs(M[k][k])<1e-14)throw Error('Matrix is singular');
+  for(let i=k+1;i<n;i++){
+   const m=M[i][k]/M[k][k];
+   for(let j=k;j<=n;j++)M[i][j]-=m*M[k][j];
+  }
+ }
+ const x=new Array(n).fill(0);
+ for(let i=n-1;i>=0;i--){
+  let s=M[i][n];
+  for(let j=i+1;j<n;j++)s-=M[i][j]*x[j];
+  x[i]=s/M[i][i];
+ }
+ const r=matVecMul(A,x).map((v,i)=>v-b[i]);
+ return {
+  encoded:`Augmented system [A | b]:\n${fmtMat(M)}\n\nRow swaps performed: ${steps.length?steps.join(', '):'none'}\n\nSolution x:\n  ${fmtVec(x,6)}\n\nResidual ||b - A x|| = ${fmtNum(norm2(r),6)}`,
+  decoded:`Gaussian elimination reduces the augmented matrix to upper triangular form. The back substitution then solves for the unknowns from the last row up.\n\nPartial pivoting chooses the largest available entry in the column as the pivot. This keeps the multipliers small and improves numerical stability.\n\nThe final residual should be close to machine epsilon times the size of the problem. If it is not, the matrix is ill conditioned.`,
+  steps:n,units:n,tokens:n
+ };
+}
+
+function demoLu(text){
+ const A=parseMatrix(text);
+ const n=A.length;
+ if(n!==A[0].length)throw Error('LU requires a square matrix');
+ const{L,U,P,sign}=luDecomp(A);
+ // verify PA = LU
+ const PA=matMul(P,A);
+ const LU=matMul(L,U);
+ let err=0;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++)err=Math.max(err,Math.abs(PA[i][j]-LU[i][j]));
+ const det=detFromLU({L,U,P,sign});
+ return {
+  encoded:`A:\n${fmtMat(A)}\n\nP:\n${fmtMat(P)}\n\nL:\n${fmtMat(L)}\n\nU:\n${fmtMat(U)}\n\nmax |PA - LU| = ${fmtNum(err,6)}\ndet(A) = ${fmtNum(det,6)}\nNumber of row swaps: ${sign===1?'even':'odd'}`,
+  decoded:`LU decomposition factors A into a lower triangular matrix L and an upper triangular matrix U. Partial pivoting records row swaps in P, so PA = LU.\n\nOnce you have the factorization, solving for a new right hand side costs only two triangular solves, which is much faster than refactoring A.\n\nThe determinant is the product of the diagonal of U times the sign of the permutation. This is far more efficient than expanding the determinant by minors.`,
+  steps:n,units:n,tokens:n
+ };
+}
+
+function demoCholesky(text){
+ const A=parseMatrix(text);
+ const n=A.length;
+ if(n!==A[0].length)throw Error('Cholesky requires a square matrix');
+ // check symmetry
+ let symErr=0;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++)symErr=Math.max(symErr,Math.abs(A[i][j]-A[j][i]));
+ const L=cholesky(A);
+ const Lt=matTranspose(L);
+ const LLt=matMul(L,Lt);
+ let err=0;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++)err=Math.max(err,Math.abs(LLt[i][j]-A[i][j]));
+ return {
+  encoded:`A:\n${fmtMat(A)}\n\nSymmetry error max |A - A^T| = ${fmtNum(symErr,6)}\n\nL:\n${fmtMat(L)}\n\nL^T:\n${fmtMat(Lt)}\n\nmax |L L^T - A| = ${fmtNum(err,6)}\nDiagonal of L: ${L.map((r,i)=>fmtNum(r[i],4)).join(', ')}`,
+  decoded:`The Cholesky factorization writes a symmetric positive definite matrix as A = L L^T with L lower triangular and positive diagonal.\n\nIt is twice as fast as LU because it uses the symmetry of A. No pivoting is needed, because the algorithm is always numerically stable when A is SPD.\n\nIf any diagonal entry of L would be zero or negative, A is not positive definite. This is the check that reveals the failure.`,
+  steps:n,units:n,tokens:n
+ };
+}
+
+function demoQr(text){
+ const A=parseMatrix(text);
+ const{Q,R}=qrHouseholder(A);
+ const m=A.length,n=A[0].length;
+ const QR=matMul(Q,R);
+ let err=0;
+ for(let i=0;i<m;i++)for(let j=0;j<n;j++)err=Math.max(err,Math.abs(QR[i][j]-A[i][j]));
+ // check orthogonality
+ const QtQ=matMul(matTranspose(Q),Q);
+ let orthErr=0;
+ for(let i=0;i<Q[0].length;i++)for(let j=0;j<Q[0].length;j++)orthErr=Math.max(orthErr,Math.abs(QtQ[i][j]-(i===j?1:0)));
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nQ (${m} by ${Q[0].length}):\n${fmtMat(Q)}\n\nR (${R.length} by ${R[0].length}):\n${fmtMat(R)}\n\nmax |QR - A|        = ${fmtNum(err,6)}\nmax |Q^T Q - I|     = ${fmtNum(orthErr,6)}\nR is upper triangular: ${R.every((row,i)=>row.every((v,j)=>j>=i||Math.abs(v)<1e-12))?'yes':'no'}`,
+  decoded:`The QR decomposition writes A = Q R with Q orthogonal and R upper triangular. This implementation uses Householder reflections, which are numerically stable.\n\nThe columns of Q are orthonormal, so Q^T Q = I. Multiplying by Q does not change vector lengths or angles, which is why QR is the method of choice for least squares.\n\nFor least squares, solve R x = Q^T b by back substitution. Only the top n rows of the transformed right hand side matter.`,
+  steps:m*n,units:Math.min(m-1,n),tokens:1
+ };
+}
+
+function demoEigen(text){
+ const A=parseMatrix(text);
+ const n=A.length;
+ if(n!==A[0].length)throw Error('Eigendecomposition requires a square matrix');
+ // check symmetry
+ let sym=true;
+ for(let i=0;i<n&&sym;i++)for(let j=0;j<n;j++)if(Math.abs(A[i][j]-A[j][i])>1e-10){sym=false;break}
+ if(!sym)throw Error('This lab uses the Jacobi method which requires a symmetric matrix');
+ const{eigenvalues,eigenvectors}=jacobiEigen(A);
+ // sort descending
+ const order=eigenvalues.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]);
+ const evals=order.map(([v])=>v);
+ const V=Array.from({length:n},(_,i)=>order.map(([_,j])=>eigenvectors[i][j]));
+ const rows=evals.map((lam,i)=>{
+  const v=V.map(row=>row[i]);
+  const Av=matVecMul(A,v);
+  const resid=Math.sqrt(dot(Av.map((x,k)=>x-lam*v[k]),Av.map((x,k)=>x-lam*v[k])));
+  return `  lambda ${String(i+1).padStart(2)} = ${fmtNum(lam,6).padStart(12)}   residual ||Av - lambda v|| = ${fmtNum(resid,3)}`;
+ });
+ // reconstruct
+ const Vt=matTranspose(V);
+ const D=eye(n).map((row,i)=>row.map((v,j)=>i===j?evals[i]:0));
+ const A_rec=matMul(matMul(V,D),Vt);
+ let err=0;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++)err=Math.max(err,Math.abs(A_rec[i][j]-A[i][j]));
+ return {
+  encoded:`A:\n${fmtMat(A)}\n\nEigenvalues (sorted):\n${rows.join('\n')}\n\nEigenvector matrix V (columns are eigenvectors):\n${fmtMat(V)}\n\nmax |V D V^T - A| = ${fmtNum(err,6)}`,
+  decoded:`For a symmetric matrix, all eigenvalues are real and eigenvectors can be chosen orthonormal. The Jacobi method zeros off diagonal entries one at a time using plane rotations.\n\nEach eigenvalue and its eigenvector satisfy A v = lambda v. The residual should be near machine epsilon for a well conditioned symmetric matrix.\n\nEigenvectors of a symmetric matrix form an orthogonal basis. Any vector can be expanded in this basis, which is why eigendecomposition is so useful.`,
+  steps:n,units:n*n,tokens:n
+ };
+}
+
+function demoSvd(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ const{U,sv,V}=svdFromEigen(A);
+ const k=sv.length;
+ // Build Sigma
+ const Sigma=zeros(m,n);
+ for(let i=0;i<k;i++)Sigma[i][i]=sv[i];
+ const Vt=matTranspose(V);
+ const USV=matMul(matMul(U,Sigma),Vt);
+ let err=0;
+ for(let i=0;i<m;i++)for(let j=0;j<n;j++)err=Math.max(err,Math.abs(USV[i][j]-A[i][j]));
+ const rank=sv.filter(s=>s>1e-10).length;
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nSingular values:\n${sv.map((s,i)=>`  sigma ${String(i+1).padStart(2)} = ${fmtNum(s,6)}`).join('\n')}\n\nU (${m} by ${U[0].length}):\n${fmtMat(U)}\n\nV^T (${Vt.length} by ${Vt[0].length}):\n${fmtMat(Vt)}\n\nmax |U Sigma V^T - A| = ${fmtNum(err,6)}\nrank          = ${rank}\n2 norm        = ${fmtNum(sv[0],6)}\nFrobenius     = ${fmtNum(Math.sqrt(sv.reduce((s,x)=>s+x*x,0)),6)}\ncondition     = ${sv[sv.length-1]>1e-14?fmtNum(sv[0]/sv[sv.length-1],4):'infinite'}`,
+  decoded:`The SVD writes A = U Sigma V^T with U and V orthogonal and Sigma diagonal with non negative entries. It works for any matrix shape.\n\nSingular values are the square roots of the eigenvalues of A^T A. The columns of U are the left singular vectors, and the columns of V are the right singular vectors.\n\nThe rank of A equals the number of nonzero singular values. The best rank k approximation is the sum of the top k outer products sigma_i u_i v_i^T.`,
+  steps:m*n,units:k,tokens:1
+ };
+}
+
+function demoGramSchmidt(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ let res=null,err=null;
+ try{res={classical:gramSchmidt(A,false),modified:gramSchmidt(A,true)}}
+ catch(e){err=e.message}
+ if(err)throw Error(err);
+ const rows=[];
+ for(const[name,r] of Object.entries(res)){
+  const{Q,R}=r;
+  const QtQ=matMul(matTranspose(Q),Q);
+  let orth=0;
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++)orth=Math.max(orth,Math.abs(QtQ[i][j]-(i===j?1:0)));
+  const QR=matMul(Q,R);
+  let rec=0;
+  for(let i=0;i<m;i++)for(let j=0;j<n;j++)rec=Math.max(rec,Math.abs(QR[i][j]-A[i][j]));
+  rows.push(`  ${name.padEnd(10)}: orthogonality error = ${fmtNum(orth,3)}   reconstruction error = ${fmtNum(rec,3)}`);
+ }
+ const{modified:{Q,R}}=res;
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nQ (from modified GS):\n${fmtMat(Q)}\n\nR (from modified GS):\n${fmtMat(R)}\n\nComparison:\n${rows.join('\n')}`,
+  decoded:`Gram-Schmidt turns a set of independent vectors into an orthonormal set. Classical GS computes all projections from the original column. Modified GS updates the vector after each projection.\n\nModified GS is numerically more stable because it prevents cancellation. For nearly dependent columns the difference is dramatic.\n\nBoth methods share the same Q R = A relation, but the loss of orthogonality in classical GS can be much larger.`,
+  steps:m*n,units:n,tokens:n
+ };
+}
+
+function demoHouseholderGivens(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ const{Q,R}=qrHouseholder(A);
+ // Show one Householder reflector explicitly
+ const x=[];
+ for(let i=0;i<m;i++)x.push(A[i][0]);
+ const xnorm=norm2(x);
+ const alpha=-Math.sign(x[0]||1)*xnorm;
+ const v=x.slice();v[0]-=alpha;
+ const vn2=dot(v,v);
+ const H=eye(m);
+ for(let i=0;i<m;i++)for(let j=0;j<m;j++)H[i][j]-=2*v[i]*v[j]/vn2;
+ const Hx=matVecMul(H,x);
+ return {
+  encoded:`First column of A: ${fmtVec(x)}\n\nHouseholder vector v:\n  ${fmtVec(v)}\n\nalpha = ${fmtNum(alpha)}\n||v||^2 = ${fmtNum(vn2)}\n\nHouseholder matrix H (m by m):\n${fmtMat(H)}\n\nH times first column of A:\n  ${fmtVec(Hx,6)}\n  (all entries except the first should be near zero)\n\nFull QR from Householder:\nQ (${m} by ${Q[0].length}):\n${fmtMat(Q)}\n\nR (${R.length} by ${R[0].length}):\n${fmtMat(R)}`,
+  decoded:`A Householder reflector is an orthogonal matrix H = I - 2 v v^T / (v^T v). It reflects a vector across the hyperplane perpendicular to v.\n\nThe key property is H x = alpha e_1, which means H zeros out every entry of x except the first. Applying a sequence of Householders to A reduces it to upper triangular form, producing the QR decomposition.\n\nGivens rotations work differently: they zero out a single entry using a 2 by 2 rotation. They are useful for sparse matrices or when only a few entries need to be eliminated.`,
+  steps:m*n,units:Math.min(m-1,n),tokens:1
+ };
+}
+
+function demoJacobiGS(text){
+ const{A,b}=parseMatrixAndVector(text);
+ if(A.length!==A[0].length)throw Error('Matrix must be square');
+ const n=A.length;
+ const j=jacobiIter(A,b,200,1e-12);
+ const gs=gaussSeidel(A,b,200,1e-12,1);
+ const true_x=backSub(luDecomp(A).U,forwardSub(luDecomp(A).L,matVecMul(luDecomp(A).P,b)));
+ const rows=[
+  `  Jacobi        iterations = ${String(j.hist.length).padStart(3)}   final residual = ${fmtNum(j.hist[j.hist.length-1],3)}`,
+  `  Gauss-Seidel  iterations = ${String(gs.hist.length).padStart(3)}   final residual = ${fmtNum(gs.hist[gs.hist.length-1],3)}`
+ ];
+ return {
+  encoded:`A:\n${fmtMat(A)}\n\nb: ${fmtVec(b)}\n\n${rows.join('\n')}\n\nJacobi solution:      ${fmtVec(j.x,6)}\nGauss-Seidel solution: ${fmtVec(gs.x,6)}\nDirect solution:       ${fmtVec(true_x,6)}`,
+  decoded:`Both Jacobi and Gauss-Seidel start from the zero vector and iterate until the residual is small. Jacobi uses the previous iterate for all updates. Gauss-Seidel uses the newest values as soon as they are available.\n\nThe convergence rate depends on the spectral radius of the iteration matrix. Diagonal dominance is a simple sufficient condition that guarantees convergence for any starting guess.\n\nGauss-Seidel typically converges about twice as fast as Jacobi for the same problem, but the exact factor depends on the matrix.`,
+  steps:n,units:j.hist.length+gs.hist.length,tokens:n
+ };
+}
+
+function demoSorCg(text){
+ const{A,b}=parseMatrixAndVector(text);
+ if(A.length!==A[0].length)throw Error('Matrix must be square');
+ const n=A.length;
+ // check SPD for CG
+ let sym=true;
+ for(let i=0;i<n&&sym;i++)for(let j=0;j<n;j++)if(Math.abs(A[i][j]-A[j][i])>1e-10){sym=false;break}
+ const sorRes=[];const cgRes=[];
+ for(const omega of [0.8,1.0,1.2,1.5]){
+  const r=gaussSeidel(A,b,300,1e-12,omega);
+  sorRes.push(`  SOR omega = ${omega.toFixed(1)}   iterations = ${String(r.hist.length).padStart(3)}   final residual = ${fmtNum(r.hist[r.hist.length-1],3)}`);
+ }
+ let cgOut='';
+ if(sym){
+  const cg=conjugateGradient(A,b,300,1e-12);
+  cgOut=`  Conjugate gradient: iterations = ${cg.hist.length}   final residual = ${fmtNum(cg.hist[cg.hist.length-1],3)}\n  CG solution: ${fmtVec(cg.x,6)}`;
+ } else {
+  cgOut='  Conjugate gradient requires a symmetric matrix, skipped.';
+ }
+ return {
+  encoded:`A:\n${fmtMat(A)}\n\nb: ${fmtVec(b)}\n\nSOR iterations (various omega):\n${sorRes.join('\n')}\n\n${cgOut}`,
+  decoded:`SOR adds a relaxation parameter omega to Gauss-Seidel. When omega is between 1 and 2 the iteration often converges faster. When omega equals 1 the method is exactly Gauss-Seidel. Values between 0 and 1 give under relaxation and usually slow things down.\n\nConjugate gradient is the method of choice for large symmetric positive definite systems. In exact arithmetic it converges in at most n steps. In floating point it takes a few more, but the convergence is usually much faster than Jacobi or Gauss-Seidel.\n\nThe number of CG iterations depends on the square root of the condition number. A good preconditioner reduces that dramatically.`,
+  steps:n,units:4+(sym?1:0),tokens:n
+ };
+}
+
+function demoCsrCsc(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ const values=[],colIdx=[],rowPtr=[0];
+ for(let i=0;i<m;i++){
+  for(let j=0;j<n;j++)if(A[i][j]!==0){values.push(A[i][j]);colIdx.push(j)}
+  rowPtr.push(values.length);
+ }
+ const cscValues=[],cscRowIdx=[],colPtr=[0];
+ for(let j=0;j<n;j++){
+  for(let i=0;i<m;i++)if(A[i][j]!==0){cscValues.push(A[i][j]);cscRowIdx.push(i)}
+  colPtr.push(cscValues.length);
+ }
+ const nnz=values.length;
+ const density=nnz/(m*n);
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nCSR representation:\n  values    = [${values.join(', ')}]\n  indices   = [${colIdx.join(', ')}]\n  indptr    = [${rowPtr.join(', ')}]\n\nCSC representation:\n  values    = [${cscValues.join(', ')}]\n  indices   = [${cscRowIdx.join(', ')}]\n  colptr    = [${colPtr.join(', ')}]\n\nnonzeros  = ${nnz} of ${m*n} entries\ndensity   = ${fmtNum(density*100,2)}%\nstorage   = ${nnz*2+(m+1)} numbers vs ${m*n} for dense\nsaving    = ${fmtNum((1-(nnz*2+(m+1))/(m*n))*100,1)}%`,
+  decoded:`CSR (compressed sparse row) stores nonzeros row by row. The row pointer has length m+1 and says where each row starts. This is fast for row operations and matrix vector products.\n\nCSC (compressed sparse column) does the same thing column by column. It is faster for column operations, which is what most direct solvers need.\n\nBoth formats store only the nonzeros and their indices. For very sparse matrices this saves enormous amounts of memory. A dense matrix of the same size would store every entry including the zeros.`,
+  steps:nnz,units:nnz,tokens:nnz
+ };
+}
+
+function demoStrassen(text){
+ const A=parseMatrix(text);
+ const n=A.length;
+ if(n!==A[0].length)throw Error('Use a square matrix for this lab');
+ if((n&(n-1))!==0)throw Error('Strassen demo needs a power of two size (2, 4, 8, ...)');
+ const B=matTranspose(A); // use transpose as a convenient second matrix
+ const C_naive=matMul(A,B);
+ const C_str= n<=2 ? C_naive : strassen(A,B);
+ let diff=0;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++)diff=Math.max(diff,Math.abs(C_naive[i][j]-C_str[i][j]));
+ // flop counts
+ const naive=n*n*n*2;
+ const strassenFlops=n<=4?naive:Math.round(Math.pow(n,Math.log2(7))*2);
+ return {
+  encoded:`A (${n} by ${n}):\n${fmtMat(A)}\n\nB = A^T:\n${fmtMat(B)}\n\nA B (naive):\n${fmtMat(C_naive)}\n\nA B (Strassen):\n${fmtMat(C_str)}\n\nmax difference = ${fmtNum(diff,6)}\n\nApproximate flops:\n  naive    : ${naive}\n  Strassen : ${strassenFlops}`,
+  decoded:`Strassen's algorithm multiplies two matrices using 7 recursive multiplications instead of 8 at each level. This gives asymptotic complexity O(n^2.807) instead of O(n^3).\n\nThe cost is a larger constant factor and slightly worse numerical stability. In practice BLAS libraries use the naive algorithm for small matrices and switch to Strassen only for very large ones.\n\nThis demo uses a small matrix so you can see the result. For large matrices the recursion is what gives the speedup.`,
+  steps:n,units:naive,tokens:1
+ };
+}
+
+function demoKroneckerHadamard(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ const B=A; // use same matrix
+ const K=kron(A,B);
+ const H=hadamard(A,B);
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nA kron A (${K.length} by ${K[0].length}):\n${fmtMat(K)}\n\nA .* A (Hadamard, ${H.length} by ${H[0].length}):\n${fmtMat(H)}\n\nKronecker shape: ${K.length} by ${K[0].length}\nHadamard shape: ${H.length} by ${H[0].length}`,
+  decoded:`The Kronecker product replaces each entry A[i][j] with the whole matrix A scaled by A[i][j]. Its shape is (m p) by (n q) for A of size m by n and B of size p by q.\n\nThe Hadamard product multiplies the two matrices entry by entry. Both matrices must have the same shape.\n\nKronecker products describe separable transforms in signal processing and quantum computing. Hadamard products appear in neural networks, statistics and machine learning where they are often called elementwise multiplication.`,
+  steps:K.length*K[0].length,units:K.length*K[0].length,tokens:1
+ };
+}
+
+function demoMatrixFunctions(text){
+ const A=parseMatrix(text);
+ const n=A.length;
+ if(n!==A[0].length)throw Error('Matrix exponential requires a square matrix');
+ const E=matExp(A);
+ // also show a few Taylor terms
+ const I=eye(n);
+ const A2=matMul(A,A);
+ const A3=matMul(A2,A);
+ const taylor=I.map((row,i)=>row.map((v,j)=>v+A[i][j]+A2[i][j]/2+A3[i][j]/6));
+ return {
+  encoded:`A:\n${fmtMat(A)}\n\nexp(A):\n${fmtMat(E)}\n\nTaylor I + A + A^2/2 + A^3/6:\n${fmtMat(taylor)}\n\ndifference from full exp: ${fmtNum(Math.max(...E.map((row,i)=>Math.max(...row.map((v,j)=>Math.abs(v-taylor[i][j]))))),3)}`,
+  decoded:`The matrix exponential is defined by the same Taylor series as the scalar exponential: exp(A) = I + A + A^2/2! + A^3/3! + ...\n\nFor a diagonal matrix, exp(A) is the diagonal matrix with the exponentials of the diagonal entries. For a general matrix you must use the series, a Padé approximant, or the eigendecomposition.\n\nThis implementation uses scaling and squaring. Scale A down until its norm is small, apply the Taylor series, then square the result back up. This is the standard approach in numerical libraries.`,
+  steps:n,units:n*n,tokens:1
+ };
+}
+
+function demoMatrixInverse(text){
+ const A=parseMatrix(text);
+ const n=A.length;
+ if(n!==A[0].length)throw Error('Matrix inverse requires a square matrix');
+ const Ainv=matInverse(A);
+ const I=eye(n);
+ const AAinv=matMul(A,Ainv);
+ let err=0;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++)err=Math.max(err,Math.abs(AAinv[i][j]-I[i][j]));
+ return {
+  encoded:`A:\n${fmtMat(A)}\n\nA^-1:\n${fmtMat(Ainv)}\n\nA A^-1:\n${fmtMat(AAinv)}\n\nmax |A A^-1 - I| = ${fmtNum(err,6)}`,
+  decoded:`The inverse is computed with Gauss-Jordan elimination on the augmented matrix [A | I]. Row operations reduce the left half to the identity, and the right half becomes A^-1.\n\nThe cost is twice that of LU. In production code, never compute the inverse to solve a linear system. Use LU or Cholesky instead, which are faster and numerically more stable.\n\nAlways verify by computing A A^-1 and checking that it is close to the identity. A large error means the matrix is ill conditioned.`,
+  steps:n,units:n*n,tokens:1
+ };
+}
+
+function demoShermanMorrison(text){
+ const A=parseMatrix(text);
+ const n=A.length;
+ if(n!==A[0].length)throw Error('Sherman-Morrison requires a square matrix');
+ const Ainv=matInverse(A);
+ // rank one update with unit vectors
+ const u=new Array(n).fill(0);u[0]=1;u[n-1]=-1;
+ const v=new Array(n).fill(0);v[0]=0.5;v[n-1]=2;
+ // Sherman-Morrison formula
+ const AinvU=matVecMul(Ainv,u);
+ const vAinv=matVecMul(matTranspose(Ainv),v); // v^T A^-1 = (A^-T v)^T
+ const denom=1+dot(v,AinvU);
+ if(Math.abs(denom)<1e-12)throw Error('Update is nearly singular');
+ const AinvNew=Ainv.map((row,i)=>row.map((val,j)=>val-AinvU[i]*vAinv[j]/denom));
+ // direct update
+ const Anew=A.map((row,i)=>row.map((val,j)=>val+u[i]*v[j]));
+ const AinvDirect=matInverse(Anew);
+ let diff=0;
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++)diff=Math.max(diff,Math.abs(AinvNew[i][j]-AinvDirect[i][j]));
+ return {
+  encoded:`A:\n${fmtMat(A)}\n\nu: ${fmtVec(u)}\nv: ${fmtVec(v)}\n\ndenominator 1 + v^T A^-1 u = ${fmtNum(denom,6)}\n\n(A + u v^T)^-1 via Sherman-Morrison:\n${fmtMat(AinvNew)}\n\n(A + u v^T)^-1 via direct inverse:\n${fmtMat(AinvDirect)}\n\nmax difference = ${fmtNum(diff,6)}`,
+  decoded:`The Sherman-Morrison formula gives the inverse of A + u v^T using the inverse of A. This avoids refactoring when only a rank one change is made.\n\nThe formula is (A + u v^T)^-1 = A^-1 - (A^-1 u v^T A^-1) / (1 + v^T A^-1 u). The denominator must be nonzero for the update to be invertible.\n\nThe Woodbury identity generalizes to rank k updates. It is used in Kalman filters, sequential least squares and BFGS quasi-Newton optimisation.`,
+  steps:n,units:n*n,tokens:1
+ };
+}
+
+function demoPseudoinverse(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ const{U,sv,V}=svdFromEigen(A);
+ const k=sv.length;
+ const tol=1e-10;
+ const svInv=sv.map(s=>s>tol?1/s:0);
+ // A+ = V Sigma+ U^T
+ const SigmaPlus=zeros(n,m);
+ for(let i=0;i<k;i++)SigmaPlus[i][i]=svInv[i];
+ const Ut=matTranspose(U);
+ const Aplus=matMul(matMul(V,SigmaPlus),Ut);
+ // verify four properties
+ const ApinvA=matMul(Aplus,A);
+ const AApinv=matMul(A,Aplus);
+ let check1=0,check2=0,check3=0,check4=0;
+ for(let i=0;i<m;i++)for(let j=0;j<n;j++){
+  check1=Math.max(check1,Math.abs(matMul(matMul(A,Aplus),A)[i][j]-A[i][j]));
+ }
+ for(let i=0;i<n;i++)for(let j=0;j<m;j++){
+  check2=Math.max(check2,Math.abs(matMul(matMul(Aplus,A),Aplus)[i][j]-Aplus[i][j]));
+ }
+ const AAplusT=matTranspose(AApinv);
+ for(let i=0;i<m;i++)for(let j=0;j<m;j++)check3=Math.max(check3,Math.abs(AAplusT[i][j]-AApinv[i][j]));
+ const ApinvAT=matTranspose(ApinvA);
+ for(let i=0;i<n;i++)for(let j=0;j<n;j++)check4=Math.max(check4,Math.abs(ApinvAT[i][j]-ApinvA[i][j]));
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nSingular values: ${fmtVec(sv)}\n\nA^+ (${n} by ${m}):\n${fmtMat(Aplus)}\n\nMoore-Penrose properties:\n  max |A A^+ A - A|          = ${fmtNum(check1,3)}\n  max |A^+ A A^+ - A^+|      = ${fmtNum(check2,3)}\n  max |(A A^+)^T - A A^+|    = ${fmtNum(check3,3)}\n  max |(A^+ A)^T - A^+ A|    = ${fmtNum(check4,3)}`,
+  decoded:`The Moore-Penrose pseudoinverse A^+ exists for any matrix. It generalizes the inverse and gives the minimum norm least squares solution of A x = b.\n\nThe four Moore-Penrose properties listed above uniquely define A^+. All residuals should be close to machine epsilon.\n\nThe pseudoinverse is computed from the SVD as A^+ = V Sigma^+ U^T. The diagonal entries of Sigma^+ are the reciprocals of the nonzero singular values, and zero for the small ones.`,
+  steps:m*n,units:k,tokens:1
+ };
+}
+
+function demoToeplitz(text){
+ const A=parseMatrix(text);
+ const n=A.length;
+ if(n!==A[0].length)throw Error('Toeplitz demo needs a square matrix');
+ const diags=[];
+ for(let d=-(n-1);d<=n-1;d++){
+  const values=[];
+  for(let i=0;i<n;i++){const j=i-d;if(j>=0&&j<n)values.push(A[i][j])}
+  if(values.length)diags.push({d,values:values.slice(0,4),constant:values.every(v=>Math.abs(v-values[0])<1e-10)});
+ }
+ const constantCount=diags.filter(x=>x.constant).length;
+ const isToeplitz=constantCount===diags.length;
+ return {
+  encoded:`A (${n} by ${n}):\n${fmtMat(A)}\n\nIs Toeplitz: ${isToeplitz?'yes':'no'}\n\nDiagonals:\n${diags.map(x=>`  d = ${String(x.d).padStart(3)}  first values ${x.values.join(', ')}  ${x.constant?'constant':'NOT constant'}`).join('\n')}`,
+  decoded:`A Toeplitz matrix has constant diagonals. Every entry A[i][j] depends only on the difference i - j.\n\nBecause of this structure, only 2n - 1 numbers define the whole matrix. Solving a Toeplitz system costs O(n^2) with the Levinson recursion instead of O(n^3) for a general matrix.\n\nToeplitz matrices appear in signal processing (convolution and filtering), time series analysis (Yule-Walker equations), and numerical methods for differential equations.`,
+  steps:n,units:diags.length,tokens:1
+ };
+}
+
+function demoBareiss(text){
+ const A=parseMatrix(text).map(row=>row.map(v=>Math.round(v)));
+ const n=A.length;
+ if(n!==A[0].length)throw Error('Bareiss needs a square integer matrix');
+ if(A.some(r=>r.some(v=>!Number.isInteger(v))))throw Error('All entries must be integers');
+ const M=A.map(r=>r.slice());
+ let prev=1,sign=1;
+ for(let k=0;k<n-1;k++){
+  if(M[k][k]===0){
+   let found=false;
+   for(let i=k+1;i<n;i++)if(M[i][k]!==0){[M[k],M[i]]=[M[i],M[k]];sign=-sign;found=true;break}
+   if(!found)return{encoded:`det = 0`,decoded:'The matrix is singular.',steps:k,units:0,tokens:0};
+  }
+  for(let i=k+1;i<n;i++)for(let j=k+1;j<n;j++)M[i][j]=(M[i][j]*M[k][k]-M[i][k]*M[k][j])/prev;
+  prev=M[k][k];
+ }
+ const det=sign*M[n-1][n-1];
+ return {
+  encoded:`A (integer):\n${fmtMat(A,0)}\n\nDeterminant (exact, Bareiss): ${det}\n\nFinal matrix:\n${fmtMat(M,0)}`,
+  decoded:`Bareiss elimination keeps all intermediate entries as integers when the input matrix has integer entries. This is possible because each division by the previous pivot is exact, a consequence of Sylvester's determinant identity.\n\nThe naive Gaussian elimination would produce fractions. Bareiss avoids them, which is very useful in exact arithmetic, computer algebra and integer programming.\n\nThe final pivot is the determinant. Compare with the floating point result to see the difference between exact and approximate computation.`,
+  steps:n,units:n,tokens:1
+ };
+}
+
+function demoRandomizedSvd(text){
+ const A=parseMatrix(text);
+ const m=A.length,n=A[0].length;
+ // Use full SVD as the reference
+ const{U:Ufull,sv:svFull,V:Vfull}=svdFromEigen(A);
+ const k=Math.min(m,n,Math.max(2,Math.floor(Math.min(m,n)/2)));
+ // Random projection
+ const Omega=Array.from({length:n},()=>Array.from({length:k+5},()=>Math.random()-0.5));
+ let Y=matMul(A,Omega);
+ // one power iteration
+ const AtY=matMul(matTranspose(A),Y);
+ Y=matMul(A,AtY);
+ // orthonormalize Y via QR
+ const{Y:_,...qrResult}=(()=>{const qr=qrHouseholder(Y);return{Y:qr.Q,...qr}})();
+ const Q=qrResult.Q;
+ const B=matMul(matTranspose(Q),A);
+ const{sv:svB}=svdFromEigen(B);
+ const top=svB.slice(0,k);
+ const approxErr=svFull.slice(k).reduce((s,x)=>s+x*x,0);
+ return {
+  encoded:`A (${m} by ${n}):\n${fmtMat(A)}\n\nTarget rank k = ${k}\n\nFull SVD singular values:\n  ${fmtVec(svFull)}\n\nRandomized SVD top ${k} singular values:\n  ${fmtVec(top)}\n\nRelative approximation error (Frobenius):\n  full tail sum squared = ${fmtNum(approxErr,6)}\n  ||A||_F^2             = ${fmtNum(svFull.reduce((s,x)=>s+x*x,0),6)}\n  ratio                 = ${fmtNum(approxErr/svFull.reduce((s,x)=>s+x*x,0),6)}`,
+  decoded:`Randomized SVD multiplies A by a small random matrix Omega, orthonormalizes the result to get Q, then solves a small SVD on Q^T A.\n\nOne or two power iterations improve the accuracy for slowly decaying singular values. With rapidly decaying spectra a single pass is enough.\n\nThe approximation error is roughly the sum of the tail squared singular values beyond the target rank. This is exactly the error of the best rank k approximation by the Eckart-Young theorem.`,
+  steps:m*n,units:svFull.length,tokens:1
+ };
+}
+
+/* ============================================================
+   Lab dispatcher
+   ============================================================ */
+async function runLab(l,initial){
+ const input=$('#labInput').value;
+ let res;
+ try{
+  if(!initial){$('#labEncoded').textContent='Running…';$('#labDecoded').textContent=''}
+  switch(l.demo){
+   case'matrix-basics':res=demoMatrixBasics(input);break;
+   case'vector-norms':res=demoVectorNorms(input);break;
+   case'conditioning':res=demoConditioning(input);break;
+   case'gaussian-elimination':res=demoGaussianElimination(input);break;
+   case'lu':res=demoLu(input);break;
+   case'cholesky':res=demoCholesky(input);break;
+   case'qr':res=demoQr(input);break;
+   case'eigen':res=demoEigen(input);break;
+   case'svd':res=demoSvd(input);break;
+   case'gram-schmidt':res=demoGramSchmidt(input);break;
+   case'householder-givens':res=demoHouseholderGivens(input);break;
+   case'jacobi-gs':res=demoJacobiGS(input);break;
+   case'sor-cg':res=demoSorCg(input);break;
+   case'csr-csc':res=demoCsrCsc(input);break;
+   case'strassen':res=demoStrassen(input);break;
+   case'kronecker-hadamard':res=demoKroneckerHadamard(input);break;
+   case'matrix-functions':res=demoMatrixFunctions(input);break;
+   case'matrix-inverse':res=demoMatrixInverse(input);break;
+   case'sherman-morrison':res=demoShermanMorrison(input);break;
+   case'pseudoinverse':res=demoPseudoinverse(input);break;
+   case'toeplitz':res=demoToeplitz(input);break;
+   case'bareiss':res=demoBareiss(input);break;
+   case'randomized-svd':res=demoRandomizedSvd(input);break;
+   default:throw Error('No interactive implementation is available for this lesson.');
+  }
+ }catch(e){
+  res={encoded:'Input or runtime error',decoded:e.message,steps:0,units:0,tokens:0};
+ }
+ $('#labEncoded').textContent=res.encoded;
+ $('#labDecoded').textContent=res.decoded;
+ if(!initial)toast('Lab complete');
+}
+
+/* ============================================================
+   State and shell
+   ============================================================ */
+const state={page:'home',current:null,completed:new Set(),bookmarks:new Set(),theme:'system',drafts:{}};
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1900)}
+function save(){try{localStorage.setItem('az-matrix-lab-v1',JSON.stringify({schemaVersion:1,completed:[...state.completed],bookmarks:[...state.bookmarks],theme:state.theme,current:state.current,drafts:state.drafts}))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem('az-matrix-lab-v1')||'null');if(!d||d.schemaVersion!==1)return;
+ state.completed=new Set((d.completed||[]).filter(id=>byId[id]));
+ state.bookmarks=new Set((d.bookmarks||[]).filter(id=>byId[id]));
+ state.theme=['system','light','dark'].includes(d.theme)?d.theme:'system';
+ state.current=byId[d.current]?d.current:null;
+ state.drafts=d.drafts&&typeof d.drafts==='object'?d.drafts:{};}catch(e){}}
+function applyTheme(){let t=state.theme;if(t==='system')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t;$('#themeSelect').value=state.theme}
+function getChapter(id){return CHAPTERS.find(c=>c.ids.includes(id))||CHAPTERS[0]}
+function progress(){
+ const n=state.completed.size,t=LESSONS.length;
+ $('#progressText').textContent=`${n} / ${t}`;
+ $('#progressFill').style.width=(n/t*100)+'%';
+ $('#lessonCount').textContent=t+' lessons';
+ $('#catalogCount').textContent=`${CHAPTERS.length} chapters · ${t} lessons · ${LESSONS.filter(l=>l.demo&&l.demo!=='none').length} labs`;
+ $('#progressBar').setAttribute('aria-valuenow',String(Math.round(n/t*100)));
+}
+function renderTree(){
+ const q=$('#searchInput').value.toLowerCase().trim(),ch=$('#chapterFilter').value;
+ const root=$('#courseTree');root.textContent='';
+ for(const c of CHAPTERS){
+  if(ch!=='all'&&c.id!==ch)continue;
+  const rows=c.ids.map(id=>byId[id]).filter(x=>x&&(!q||(x.title+' '+x.summary+' '+x.kind+' '+c.title).toLowerCase().includes(q)));
+  if(!rows.length)continue;
+  const group=document.createElement('section');
+  const label=document.createElement('div');label.className='group-label';
+  label.innerHTML=`<span>${esc(c.title)}</span><span>${rows.length}</span>`;
+  group.append(label);
+  rows.forEach(l=>{
+   const b=document.createElement('button');b.type='button';
+   b.className='link'+(state.current===l.id?' active':'');
+   b.dataset.lesson=l.id;
+   b.innerHTML=`<span class="num">${String(LESSONS.indexOf(l)+1).padStart(2,'0')}</span><span class="name">${esc(l.title)}</span>${state.completed.has(l.id)?'<span class="done" aria-label="completed">✓</span>':''}`;
+   group.append(b);
+  });
+  root.append(group);
+ }
+ if(!root.children.length)root.innerHTML='<p class="muted">No matching lessons. Try another search.</p>';
+ progress();
+}
+function listToHTML(a){return `<ol class="steps">${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`}
+function refsHTML(r){return r&&r.length?`<div class="references">${r.map(x=>`<a target="_blank" rel="noopener noreferrer" href="${esc(x[1])}">${esc(x[0])} ↗</a>`).join('')}</div>`:'<p class="muted">This lesson is based on standard numerical linear algebra references. See the recommended texts for a full treatment.</p>'}
+function codeRecord(l){if(l.codeKey==='none')return null;return CODE[l.codeKey]||CODE[l.demo]||null}
+function codeText(l){
+ const c=codeRecord(l);
+ if(c&&c.python)return c.python;
+ return '# CONCEPT OUTLINE, NOT EXECUTABLE PYTHON\n# Lesson: '+l.title+'\n\n# Core idea\n# '+String(l.summary||'').replace(/\n/g,'\n# ')+'\n\n# Pseudocode from the lesson\n'+String(l.pseudo||'').split('\n').map(x=>'# '+x).join('\n')+'\n';
+}
+function statusClass(l){return /Runnable/.test(l.status)?'good':'warn'}
+
+function renderLesson(id){
+ const l=byId[id];if(!l){renderHome();return}
+ state.page='lesson';state.current=id;
+ const c=getChapter(id);const index=LESSONS.indexOf(l);const next=LESSONS[(index+1)%LESSONS.length];
+ const hasDemo=l.demo&&l.demo!=='none';
+ const demoArea=hasDemo?`<section class="panel"><div class="panel-head"><h2>${esc(l.demoTitle||'Interactive teaching lab')}</h2><p>Everything runs in your browser as a teaching implementation. It is not a replacement for LAPACK or a production library.</p></div><div class="body"><div class="lab-top"><label for="labInput">Input</label><button class="btn" id="resetSample">Reset sample</button><button class="btn primary" id="runLab">Run lab</button></div><textarea class="lab-input" id="labInput" aria-label="Lab input">${esc(l.sample||'')}</textarea><div class="notice info"><strong>Format:</strong> enter one row per line. Separate values with spaces or commas. For labs that need a right hand side, put the matrix rows, then a blank line, then the vector.</div><div class="lab-cols"><div><div class="label">Output</div><div class="lab-output" id="labEncoded">Run the lab to see output.</div></div><div><div class="label">Explanation</div><div class="lab-output" id="labDecoded">Step notes appear here.</div></div></div></div></section>`:'';
+ const references=refsHTML(l.refs);
+ const code=state.drafts[id]??codeText(l);
+ $('#mainView').innerHTML=`<div class="breadcrumb">Matrix Lab / ${esc(c.title)}</div>
+<header class="header">
+ <div class="eyebrow">LESSON ${String(index+1).padStart(2,'0')} · ${esc(l.kind)}</div>
+ <h1>${esc(l.title)}</h1>
+ <p>${esc(l.summary)}</p>
+ <div class="tags"><span class="tag">Level ${l.level}</span><span class="tag ${statusClass(l)}">${esc(l.status)}</span><span class="tag">${esc(c.title.replace(/^\d+\.\s*/,''))}</span></div>
+ <div class="header-actions">
+  <button class="btn" id="bookmarkBtn">${state.bookmarks.has(id)?'★ Bookmarked':'☆ Bookmark'}</button>
+  <button class="btn primary" id="completeBtn">${state.completed.has(id)?'✓ Completed':'Mark complete'}</button>
+ </div>
+</header>
+<section class="panel"><div class="panel-head"><h2>1. Understand the idea</h2><p>Plain language and a mental picture</p></div><div class="body idea"><div><p>${esc(l.summary)}</p><p><strong>What problem it solves:</strong> ${esc(l.problem)}</p><div class="takeaway"><strong>Takeaway:</strong> ${esc(l.output)}</div></div><aside class="mental"><small>Mental picture</small><strong>${esc(l.mental)}</strong><p>${esc(l.mentalText)}</p></aside></div></section>
+<section class="panel"><div class="panel-head"><h2>2. Input and output</h2><p>Know what goes in and what comes out</p></div><div class="body two"><div class="mini"><h3>Input</h3><p>${esc(l.input)}</p></div><div class="mini"><h3>Output</h3><p>${esc(l.output)}</p></div></div></section>
+<section class="panel"><div class="panel-head"><h2>3. How it works</h2><p>Step by step, with the key rule that makes it correct</p></div><div class="body two"><div>${listToHTML(l.steps)}<div class="takeaway" style="margin-top:14px"><strong>Key rule:</strong> ${esc(l.invariant)}</div></div><pre class="pseudo">${esc(l.pseudo)}</pre></div><div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>Step</th><th>What happens</th><th>Why it matters</th></tr></thead><tbody>${l.trace.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
+${demoArea}
+<section class="panel"><div class="panel-head"><h2>4. Cost and stability</h2><p>Costs depend on matrix size, structure and condition number. These are scope labels, not universal benchmarks.</p></div><div class="body"><div class="tiles">${l.complexity.map((x,i)=>`<div class="tile"><span>${['Time','Storage','Numerics'][i]}</span><strong>${esc(x.split(' ').slice(0,2).join(' '))}</strong><small>${esc(x)}</small></div>`).join('')}</div><div class="two" style="margin-top:12px"><div class="mini"><h3>Strengths</h3><p>${esc(l.strength)}</p></div><div class="mini"><h3>Limits</h3><p>${esc(l.limits)}</p></div></div></div></section>
+<section class="panel"><div class="panel-head"><h2>5. Code and usage</h2><p>Reference code is for learning. Real numerical code should use LAPACK, BLAS or a vetted library.</p></div><div class="code-head"><div><span class="tag">${codeRecord(l)?'Python example':'Concept outline, not executable'}</span> <span class="tag">Editable</span></div><div class="header-actions" style="margin:0"><button class="btn" id="copyCode">Copy code</button><button class="btn" id="downloadCode">Download</button></div></div><textarea id="codeEditor" class="code-editor" spellcheck="false" aria-label="Editable Python code">${esc(code)}</textarea><div class="code-foot"><span>${codeRecord(l)?'Reference example. The in-page lab runs its own JavaScript implementation.':'Lesson-specific outline, not an implementation.'}</span><span id="codeStatus">Local draft</span></div><div class="body"><div class="mini"><h3>Where it is used</h3><p>${esc(l.uses)}</p></div><div class="notice" style="margin-top:12px"><strong>Common pitfall:</strong> ${esc(l.pitfall)}</div></div></section>
+<section class="panel"><div class="panel-head"><h2>6. Choices and alternatives</h2><p>Pick based on the data, constraints and the guarantee you need</p></div><div class="body two"><div class="mini"><h3>When to use this</h3><p>${esc(l.strength)}</p></div><div class="mini"><h3>When to use something else</h3><p>${esc(l.limits)}</p></div></div></section>
+<section class="panel"><div class="panel-head"><h2>7. Check yourself</h2><p>Try to answer before you open the explanation</p></div><div class="body"><details class="practice"><summary>${esc(l.question)}</summary><p>${esc(l.answer)}</p></details></div></section>
+<section class="panel"><div class="panel-head"><h2>8. References</h2><p>Standard references for this topic</p></div><div class="body">${references}<p class="muted" style="font-size:11.5px;margin-top:14px">The labs on this page are teaching implementations. For production work use LAPACK, BLAS, Eigen, scipy or another vetted numerical library.</p></div></section>
+<footer class="footer"><span>Az Matrix Lab · local learning</span><span>Lesson ${index+1} of ${LESSONS.length} · Next: ${esc(next.title)}</span><button class="btn" id="nextLesson">Next →</button></footer>`;
+
+ $('#bookmarkBtn').onclick=()=>{state.bookmarks.has(id)?state.bookmarks.delete(id):state.bookmarks.add(id);save();renderLesson(id);toast(state.bookmarks.has(id)?'Bookmarked':'Bookmark removed')};
+ $('#completeBtn').onclick=()=>{state.completed.has(id)?state.completed.delete(id):state.completed.add(id);save();renderTree();renderLesson(id);toast(state.completed.has(id)?'Lesson completed':'Completion removed')};
+ $('#nextLesson').onclick=()=>openLesson(next.id);
+ $('#copyCode').onclick=async()=>{const v=$('#codeEditor').value;try{await navigator.clipboard.writeText(v);toast('Code copied')}catch{const ta=$('#codeEditor');ta.select();document.execCommand('copy');toast('Code copied')}};
+ $('#downloadCode').onclick=()=>{const r=codeRecord(l);downloadText(`${id}.${r?'py':'txt'}`,$('#codeEditor').value,r?'text/x-python':'text/plain')};
+ $('#codeEditor').addEventListener('input',()=>{state.drafts[id]=$('#codeEditor').value;save();$('#codeStatus').textContent='Draft saved locally'});
+ if(hasDemo){
+  $('#runLab').onclick=()=>runLab(l);
+  $('#resetSample').onclick=()=>{$('#labInput').value=l.sample||'';$('#labEncoded').textContent='Run the lab to see output.';$('#labDecoded').textContent='Step notes appear here.'};
+  runLab(l,true);
+ }
+ renderTree();save();
+ if(location.hash!==`#${id}`)history.replaceState(null,'',`#${id}`);
+}
+
+function renderHome(){
+ state.page='home';
+ $('#mainView').innerHTML=`<div class="home-hero"><div class="eyebrow">AZ · ENGINEERING TOOLBOOK</div><h1>Understand matrix algorithms from the first dot product to parallel matrix multiplication.</h1><p>A beginner friendly course covering matrix foundations, linear systems, factorizations, orthogonalization, iterative solvers, sparse methods, matrix products and functions, inverses and low rank updates, structured matrices, and large scale parallel algorithms. Every lesson has a plain explanation and most have a runnable lab.</p><div class="header-actions" style="margin:0"><button class="btn primary" id="startFirst">Start at the beginning</button><button class="btn" id="resumeLesson">Continue lesson</button></div></div>
+<div class="stats"><div class="stat"><strong>${CHAPTERS.length}</strong><span>chapters</span></div><div class="stat"><strong>${LESSONS.length}</strong><span>lessons</span></div><div class="stat"><strong>${LESSONS.filter(l=>l.demo&&l.demo!=='none').length}</strong><span>runnable labs</span></div><div class="stat"><strong>1</strong><span>standalone HTML file</span></div></div>
+<section class="panel"><div class="panel-head"><h2>Honest scope</h2><p>One app covers the whole curriculum. Real numerical software is a separate engineering project.</p></div><div class="body two"><div class="mini"><h3>What runs here</h3><p>Matrix operations, norms, condition number, Gaussian elimination with partial pivoting, LU decomposition, Cholesky, Householder QR, Jacobi eigenvalue algorithm for symmetric matrices, SVD via A^T A, classical and modified Gram-Schmidt, Householder reflector demo, Jacobi and Gauss-Seidel, SOR, conjugate gradient, CSR and CSC sparse formats, Strassen multiplication, Kronecker and Hadamard products, matrix exponential with scaling and squaring, Gauss-Jordan inverse, Sherman-Morrison rank one update, Moore-Penrose pseudoinverse, Toeplitz structure, Bareiss exact integer elimination, and randomized SVD.</p></div><div class="mini"><h3>What does not run here</h3><p>Production LAPACK routines, parallel BLAS, GPU kernels, incomplete LU, algebraic multigrid, domain decomposition, GMRES, MINRES, BiCGSTAB, Smith and Hermite normal forms, sketching, Cannon and SUMMA. For real work use LAPACK, BLAS, scipy.linalg, Eigen, PETSc or an equivalent vetted library.</p></div></div></section>
+<div class="panel"><div class="panel-head"><h2>Course map</h2><p>Pick a chapter. The path runs from foundations to large scale methods.</p></div><div class="body"><div class="chapter-cards">${CHAPTERS.map((c,i)=>`<button class="chapter-card" data-chapter="${c.id}"><span class="num">CHAPTER ${String(i+1).padStart(2,'0')} · ${c.ids.length} LESSONS</span><strong>${esc(c.title.replace(/^\d+\.\s*/,''))}</strong><p>${esc(c.desc)}</p></button>`).join('')}</div></div></div>
+<footer class="footer"><span>Az Matrix Lab</span><span>Single file · no external runtime dependencies</span></footer>`;
+ $('#startFirst').onclick=()=>openLesson('matrix-operations');
+ $('#resumeLesson').onclick=()=>openLesson(state.current&&byId[state.current]?state.current:'matrix-operations');
+ $('#mainView').querySelectorAll('[data-chapter]').forEach(b=>b.onclick=()=>{const c=CHAPTERS.find(x=>x.id===b.dataset.chapter);if(c)openLesson(c.ids[0])});
+}
+
+function renderProgressPage(){
+ state.page='progress';
+ $('#mainView').innerHTML=`<div class="breadcrumb">Matrix Lab / Bookmarks & progress</div><header class="header"><div class="eyebrow">LOCAL ONLY</div><h1>Bookmarks and progress</h1><p>Your progress stays in this browser. Export the JSON to move it or keep a backup.</p></header>
+<section class="panel"><div class="panel-head"><h2>Completed lessons</h2></div><div class="body">${state.completed.size?`<div class="references">${[...state.completed].map(id=>`<a href="#${id}" data-open="${id}">${esc(byId[id].title)}</a>`).join('')}</div>`:'<p class="muted">No lessons marked complete yet.</p>'}</div></section>
+<section class="panel"><div class="panel-head"><h2>Bookmarks</h2></div><div class="body">${state.bookmarks.size?`<div class="references">${[...state.bookmarks].map(id=>`<a href="#${id}" data-open="${id}">${esc(byId[id].title)}</a>`).join('')}</div>`:'<p class="muted">No bookmarks yet.</p>'}</div></section>
+<section class="panel"><div class="panel-head"><h2>Progress data</h2></div><div class="body"><div class="header-actions" style="margin:0"><button class="btn primary" id="exportProgress">Export progress JSON</button><button class="btn" id="clearProgress">Clear completion marks</button></div><p class="muted" style="font-size:12.5px;margin-top:14px">Import accepts only known lesson IDs and a supported schema version.</p></div></section>`;
+ $('#mainView').querySelectorAll('[data-open]').forEach(a=>a.onclick=e=>{e.preventDefault();openLesson(a.dataset.open)});
+ $('#exportProgress').onclick=exportProgress;
+ $('#clearProgress').onclick=()=>{if(confirm('Clear all completion marks?')){state.completed.clear();save();renderProgressPage();renderTree();toast('Completion marks cleared')}};
+}
+
+function openLesson(id){if(!byId[id])return;renderLesson(id);renderTree();$('#mainView').focus({preventScroll:true});window.scrollTo(0,0)}
+function downloadText(name,text,type='text/plain'){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
+function exportProgress(){downloadText('az-matrix-lab-progress.json',JSON.stringify({schemaVersion:1,completed:[...state.completed],bookmarks:[...state.bookmarks],theme:state.theme,current:state.current,drafts:state.drafts},null,2),'application/json');toast('Progress exported')}
+function importProgressFile(file){
+ if(file.size>2_000_000){toast('Import rejected: file too large');return}
+ const r=new FileReader();
+ r.onload=()=>{try{
+  const d=JSON.parse(r.result);
+  if(!d||d.schemaVersion!==1||!Array.isArray(d.completed)||!Array.isArray(d.bookmarks)||typeof d.drafts!=='object')throw Error('bad schema');
+  if([...d.completed,...d.bookmarks].some(id=>typeof id!=='string'||!byId[id]))throw Error('unknown id');
+  state.completed=new Set(d.completed);
+  state.bookmarks=new Set(d.bookmarks);
+  state.theme=['system','light','dark'].includes(d.theme)?d.theme:'system';
+  state.current=byId[d.current]?d.current:null;
+  state.drafts=Object.fromEntries(Object.entries(d.drafts).filter(([k,v])=>byId[k]&&typeof v==='string'&&v.length<100000));
+  applyTheme();save();renderTree();
+  state.current?openLesson(state.current):renderHome();
+  toast('Progress imported');
+ }catch(e){toast('Import rejected: invalid progress data')}};
+ r.readAsText(file);
+}
+
+function bindGlobal(){
+ $('#themeSelect').onchange=()=>{state.theme=$('#themeSelect').value;applyTheme();save()};
+ $('#printBtn').onclick=()=>print();
+ $('#exportBtn').onclick=exportProgress;
+ $('#importBtn').onclick=()=>$('#importFile').click();
+ $('#importFile').onchange=e=>{if(e.target.files[0])importProgressFile(e.target.files[0]);e.target.value=''};
+ $('#searchInput').oninput=renderTree;
+ $('#chapterFilter').onchange=renderTree;
+ $('#homeLink').onclick=e=>{e.preventDefault();renderHome();history.replaceState(null,'','#home')};
+ $('#courseTree').onclick=e=>{const b=e.target.closest('[data-lesson]');if(b)openLesson(b.dataset.lesson)};
+ document.querySelectorAll('[data-page="home"]').forEach(b=>b.onclick=renderHome);
+ document.querySelectorAll('[data-page="progress"]').forEach(b=>b.onclick=renderProgressPage);
+ document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();$('#searchInput').focus()}
+  if(e.key.toLowerCase()==='t'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){
+   state.theme=state.theme==='dark'?'light':state.theme==='light'?'system':'dark';
+   applyTheme();save();
+  }
+ });
+}
+
+function init(){
+ load();
+ applyTheme();
+ CHAPTERS.forEach(c=>{const op=document.createElement('option');op.value=c.id;op.textContent=c.title;$('#chapterFilter').append(op)});
+ bindGlobal();
+ renderTree();
+ const hash=location.hash.replace(/^#/,'');
+ if(hash&&byId[hash])renderLesson(hash);
+ else if(state.current&&byId[state.current])renderLesson(state.current);
+ else renderHome();
+ progress();
+}
+init();
+</script></body></html>
